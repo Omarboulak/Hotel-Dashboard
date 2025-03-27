@@ -5,11 +5,9 @@ import { MenuContact } from "./Compnents/MenuContact";
 import { useLocation } from "react-router-dom";
 
 function contact() {
-    const [contact, setContact] = useState([]);
-    const location = useLocation();
 
     useEffect(() => {
-        fetch('../../Contact.json')
+        fetch('../../Booking.json')
             .then((response) => response.json())
             .then((data) => setContact(data))
             .catch((error) => console.error("Error cargando datos:", error));
@@ -24,18 +22,6 @@ function contact() {
         { header: 'ARCHIVE', accessor: 'ARCHIVE' },
     ];
 
-    const handleArchive = (archiveId) => {
-        setContact(arch =>
-          arch.map(contact =>
-            contact.ID === archiveId ? { ...contact, ARCHIVE: true } : contact
-          )
-        );
-      };
-      
-      const isArchivedView = location.pathname.includes("archive");
-      const filteredContacts = isArchivedView
-        ? contact.filter(contact => contact.ARCHIVE)
-        : contact.filter(contact => !contact.ARCHIVE);
 
     return (
         <div>
@@ -54,13 +40,6 @@ function contact() {
                             </ContactInfo>
                         );
                     }
-                    if (col.accessor === 'ARCHIVE') {
-                        return !row.ARCHIVE ? (
-                            <button onClick={() => handleArchive(row.ID)}>Archive</button>
-                          ) : (
-                            <span>Archived</span>
-                          );
-                        }
                         return row[col.accessor];
                       }}
                     />

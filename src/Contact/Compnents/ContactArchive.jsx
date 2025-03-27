@@ -28,7 +28,6 @@ export const ContactArchive = () => {
   return (
     <div>
       <MenuContact />
-      <h2>Contactos Archivados</h2>
       <Table
         columns={columns}
         data={archivedContacts}

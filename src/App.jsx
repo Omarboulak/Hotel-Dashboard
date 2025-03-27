@@ -6,7 +6,7 @@ import Header from './components/header';
 import GlobalStyle from './components/global';
 import { Room } from './Room/Room';
 import Contact from './Contact/Contact';
-import ContactArchive from './Contact/Compnents/ContactArchive';
+import { ContactArchive } from './Contact/Compnents/ContactArchive';
 
 
 function App() {

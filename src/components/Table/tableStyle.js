@@ -6,7 +6,7 @@ export const TableContainer = styled.div`
         background: #FFFFFF;
         box-shadow: 0px 4px 4px #00000005;
         border-radius: 20px;
-        margin: 4rem auto;
+        margin: 1rem auto 4rem;
         padding: 1rem;
 
         td{
