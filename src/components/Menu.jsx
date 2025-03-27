@@ -11,7 +11,6 @@ import key from '../assets/key.svg'
 function Menu() {
     return (
         <MenuContainer>
-
             <Logo>
                 <img src={hotel} alt="" />
                 <Name>
@@ -41,9 +40,9 @@ function Menu() {
                     </Link>
                 </li>
                 <li>
-                    <Link to="/guest">
+                    <Link to="/Users">
                         <img src={user} alt="Guest icon" />
-                        Guest
+                        Users
                     </Link>
                 </li>
                 <li>

@@ -1,24 +1,24 @@
 import styled from 'styled-components';
 
-export const RoomInfo = styled.div`
+export const Info = styled.div`
   display: flex;
   align-items: center;
   gap: 16px;
 `;
 
-export const RoomImage = styled.img`
+export const Image = styled.img`
   width: 70px;
   height: 70px;
   border-radius: 8px;
   object-fit: cover;
 `;
 
-export const RoomDetails = styled.div`
+export const Details = styled.div`
   display: flex;
   flex-direction: column;
 `;
 
-export const RoomId = styled.span`
+export const ID = styled.span`
   font-family: 'Poppins';
   font-size: 14px;
   color: #799283;

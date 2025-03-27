@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Table from "../components/Table/Table";
-import { RoomInfo, RoomImage, RoomDetails, RoomId, RoomNumber, Status } from './roomStyled';
+import { Info, Image, Details, ID, RoomNumber, Status } from './roomStyled';
 
 export const Room = () => {
     const [room, setRoom] = useState([]);
@@ -29,13 +29,13 @@ export const Room = () => {
                 renderCell={(col, row) => {
                     if (col.accessor === 'Customer') {
                         return (
-                            <RoomInfo>
-                                <RoomImage src={row[col.accessor]} alt="Room" />
-                                <RoomDetails>
-                                    <RoomId>{row['Room ID']}</RoomId>
+                            <Info>
+                                <Image src={row[col.accessor]} alt="Room" />
+                                <Details>
+                                    <ID>{row['Room ID']}</ID>
                                     <RoomNumber>{row['Room number']}</RoomNumber>
-                                </RoomDetails>
-                            </RoomInfo>
+                                </Details>
+                            </Info>
                         );
                     }
                     if (col.accessor === 'Status') {

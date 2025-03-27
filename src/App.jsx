@@ -8,7 +8,7 @@ import { Room } from './Room/Room';
 import Contact from './Contact/Contact';
 import { ContactArchive } from './Contact/Compnents/ContactArchive';
 import { Bookings } from './booking/Bookings';
-
+import { Users } from './users/Users';
 
 function App() {
 
@@ -24,7 +24,8 @@ function App() {
               <Route path="/Room" element={<Room />} />
               <Route path="/Bookings" element={<Bookings />} />
               <Route path="/Contact" element={<Contact />} />
-              <Route path="/contact/archive" element={<ContactArchive />} />
+              <Route path="/Contact/archive" element={<ContactArchive />} />
+              <Route path="/Users" element={<Users />} />
             </Routes>
           </MainContent>
         </Container>
