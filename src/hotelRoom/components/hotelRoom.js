@@ -68,7 +68,7 @@ export const InfoCheck = styled.div`
     
     p:first-of-type{
         font-size: 14px;
-        color: #C5C5C5;
+        color: #6E6E6E;
         margin-bottom: 1rem;
     }
     
@@ -79,7 +79,7 @@ export const InfoCheck = styled.div`
 `
 export const Linea = styled.hr`
     border: none;
-    border-top: 1px solid #C5C5C5;
+    border-top: 1px solid #6E6E6E;
     margin: 2rem 0;
 `
 
