@@ -35,8 +35,7 @@ export const RoomNumber = styled.span`
 export const Status = styled.p`
   color: #FFFFFF;
   background-color: ${(props) => props.status === 'Available' ? '#5AD07A' : '#E23428'};
-  padding: .5rem 0;
+  padding: .5rem 1rem;
   border-radius: 12px;
-  width: 90%;
   text-align: center;
 `;

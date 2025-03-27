@@ -7,6 +7,7 @@ import GlobalStyle from './components/global';
 import { Room } from './Room/Room';
 import Contact from './Contact/Contact';
 import { ContactArchive } from './Contact/Compnents/ContactArchive';
+import { Bookings } from './booking/Bookings';
 
 
 function App() {
@@ -21,6 +22,7 @@ function App() {
             <Header />
             <Routes>
               <Route path="/Room" element={<Room />} />
+              <Route path="/Bookings" element={<Bookings />} />
               <Route path="/Contact" element={<Contact />} />
               <Route path="/contact/archive" element={<ContactArchive />} />
             </Routes>
