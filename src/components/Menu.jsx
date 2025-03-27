@@ -51,6 +51,12 @@ function Menu() {
                         Contact
                     </Link>
                 </li>
+                <li>
+                    <Link to="/HotelRoom">
+                        <img src={puzzle} alt="Concierge icon" />
+                        RoomInfo
+                    </Link>
+                </li>
 
 
                 <User>

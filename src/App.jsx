@@ -9,6 +9,7 @@ import Contact from './Contact/Contact';
 import { ContactArchive } from './Contact/Compnents/ContactArchive';
 import { Bookings } from './booking/Bookings';
 import { Users } from './users/Users';
+import { HotelRoom } from './hotelRoom/HotelRoom';
 
 function App() {
 
@@ -22,6 +23,7 @@ function App() {
             <Header />
             <Routes>
               <Route path="/Room" element={<Room />} />
+              <Route path="/HotelRoom" element={<HotelRoom />} />
               <Route path="/Bookings" element={<Bookings />} />
               <Route path="/Contact" element={<Contact />} />
               <Route path="/Contact/archive" element={<ContactArchive />} />
