@@ -26,6 +26,7 @@ export const Dialog = styled.dialog`
         right: .5rem;
     }
 `
+
 export const ButtonModal = styled.button`
     background-color: #EEF9F2;
     padding: 0.5rem 1rem;
@@ -56,3 +57,20 @@ export const StatusBooking = styled.p`
   border-radius: 12px;
   text-align: center;
 `
+
+export const Menu = styled.div`
+    display: flex;
+    width: auto;
+    margin: 4rem 0 0 2rem;
+
+    button{
+        border: 0;
+        background-color: transparent;
+        font: normal normal medium 16pxPoppins;
+        color: #6E6E6E; 
+        border-bottom: .2px solid #6E6E6E;
+        padding: 0 1.5rem .5rem;
+        color: ${props => (props.active ? '#135846' : '#6E6E6E')};
+        border-bottom: ${props => (props.active ? '2px solid #135846' : '.2px solid #6E6E6E')};
+    }
+` 

@@ -10,6 +10,16 @@ export const RoomContainer = styled.div`
 export const Images = styled.div`
     background-color: #C5C5C5;
     width: 50%;
+
+    .swiper{
+        max-width: 61vw;
+    
+        img {
+            width: 100%;
+            height: auto;
+            object-fit: contain;
+        }
+    } 
 `
 
 export const RoomInfoContainer = styled.div`

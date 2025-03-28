@@ -3,10 +3,12 @@ import Table from "../components/Table/Table";
 import { useLocation } from "react-router-dom";
 import { BookingUser, RoomId, ButtonModal, StatusBooking } from "./bookingStyled";
 import { Modal } from "./components/modal";
+import { FilterBooking } from "./components/FilterBooking";
 
 export const Bookings = () => {
     const [booking, setBooking] = useState([]);
-    const [open, setopen] = useState(null);
+    const [filteredBooking, setFilteredBooking] = useState([]);
+    const [open, setopen] = useState(false);
 
     useEffect(() => {
         fetch('../../Booking.json')
@@ -29,17 +31,26 @@ export const Bookings = () => {
     };
 
     const closePopup = () => {
-        setopen(null);
+        setopen(false);
     };
 
     const selectedBooking = booking.find(item => item.ID === open);
 
+    const handleFilter = (status) => {
+        if(status === 'All'){
+            setFilteredBooking(booking);
+        } else{
+            const filtered = booking.filter(cell => cell.Status === status);
+            setFilteredBooking(filtered) 
+        }
+    }
+
     return (
         <div>
-
+            <FilterBooking filter ={handleFilter}/>
             <Table
                 columns={columns}
-                data={booking}
+                data={filteredBooking}
                 renderCell={(col, row) => {
                     if (col.accessor === 'Guest') {
                         return (
@@ -65,7 +76,7 @@ export const Bookings = () => {
                     return row[col.accessor];
                 }}
             />
-            {open && selectedBooking && (
+            {selectedBooking &&(
                 <Modal
                     closeModal={closePopup}
                     request={selectedBooking['Special Request']}

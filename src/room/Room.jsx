@@ -26,11 +26,11 @@ export const Room = () => {
             <Table
                 columns={columns}
                 data={room}
-                renderCell={(col, row) => {
+                changeCell={(col, row) => {
                     if (col.accessor === 'Customer') {
                         return (
                             <Info>
-                                <Image src={row[col.accessor]} alt="Room" />
+                                <Image src={row['Photo']} alt="Room" />
                                 <Details>
                                     <ID>{row['Room ID']}</ID>
                                     <RoomNumber>{row['Room number']}</RoomNumber>
