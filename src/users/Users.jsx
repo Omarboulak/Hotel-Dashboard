@@ -6,6 +6,7 @@ import phone from '../assets/phone.svg'
 
 export const Users = () => {
     const [users, setUsers] = useState([]);
+    const [active, setActive] = useState([])
 
     useEffect(() => {
         fetch('../../users.json')
@@ -22,6 +23,16 @@ export const Users = () => {
         { header: 'Status', accessor: 'Status' },
     ];
 
+    const handleFilter = (status) => {
+        if(status === 'All'){
+            setFilteredBooking(booking);
+        } else{
+            const filtered = booking.filter(cell => cell.Status === status);
+            setFilteredBooking(filtered) 
+        }
+    }
+
+    
     return (
         <div>
             <Table

@@ -3,12 +3,13 @@ import Table from "../components/Table/Table";
 import { useLocation } from "react-router-dom";
 import { BookingUser, RoomId, ButtonModal, StatusBooking } from "./bookingStyled";
 import { Modal } from "./components/modal";
-import { FilterBooking } from "./components/FilterBooking";
+import { Filter } from "../components/filter/Filter";
 
 export const Bookings = () => {
     const [booking, setBooking] = useState([]);
     const [filteredBooking, setFilteredBooking] = useState([]);
     const [open, setopen] = useState(false);
+    const [activeFilter, setActiveFilter] = useState("All");
 
     useEffect(() => {
         fetch('../../Booking.json')
@@ -26,6 +27,8 @@ export const Bookings = () => {
         { header: 'Status', accessor: 'Status' },
     ];
 
+
+
     const openPopup = (bookingId) => {
         setopen(bookingId);
     };
@@ -37,17 +40,27 @@ export const Bookings = () => {
     const selectedBooking = booking.find(item => item.ID === open);
 
     const handleFilter = (status) => {
-        if(status === 'All'){
+        if (status === 'All') {
             setFilteredBooking(booking);
-        } else{
+        } else {
             const filtered = booking.filter(cell => cell.Status === status);
-            setFilteredBooking(filtered) 
+            setFilteredBooking(filtered)
         }
     }
 
+    const menuOptions = [
+        { value: "All", label: "All" },
+        { value: "Check In", label: "Check In" },
+        { value: "Check Out", label: "Check Out" },
+        { value: "In Progress", label: "In Progress" },
+    ];
+
     return (
         <div>
-            <FilterBooking filter ={handleFilter}/>
+            <Filter
+                options={menuOptions}
+                selected={activeFilter}
+                onSelect={handleFilter} />
             <Table
                 columns={columns}
                 data={filteredBooking}
@@ -59,7 +72,6 @@ export const Bookings = () => {
                                 <span>{row['Last_Name']}</span>
                                 <RoomId>{row['ID']}</RoomId>
                             </BookingUser>
-
                         );
                     }
                     if (col.accessor === 'Special Request') {
@@ -76,7 +88,7 @@ export const Bookings = () => {
                     return row[col.accessor];
                 }}
             />
-            {selectedBooking &&(
+            {selectedBooking && (
                 <Modal
                     closeModal={closePopup}
                     request={selectedBooking['Special Request']}
