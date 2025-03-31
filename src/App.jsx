@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { useState } from 'react';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import styled from 'styled-components';
 import Menu from './components/Menu';
 import Header from './components/header';
@@ -10,34 +10,49 @@ import { ContactArchive } from './Contact/Compnents/ContactArchive';
 import { Bookings } from './booking/Bookings';
 import { Users } from './users/Users';
 import { HotelRoom } from './hotelRoom/HotelRoom';
+import { Login } from './login/Login';
 
-function App() {
+export const App = () => {
+  const [isLoggedIn, setIsLoggedIn] = useState(false); // Estado de inicio de sesión
 
   return (
     <>
       <GlobalStyle />
       <BrowserRouter>
         <Container>
-          <Menu />
+          {/* Solo muestra Menu y Header si el usuario está logueado */}
+          {isLoggedIn && <Menu />}
           <MainContent>
-            <Header />
+            {isLoggedIn && <Header />}
             <Routes>
-              <Route path="/Room" element={<Room />} />
-              <Route path="/HotelRoom" element={<HotelRoom />} />
-              <Route path="/Bookings" element={<Bookings />} />
-              <Route path="/Contact" element={<Contact />} />
-              <Route path="/Contact/archive" element={<ContactArchive />} />
-              <Route path="/Users" element={<Users />} />
+              {/* Ruta de Login */}
+              <Route
+                path="/login"
+                element={<Login onLogin={() => setIsLoggedIn(true)} />}
+              />
+              {/* Rutas protegidas */}
+              {isLoggedIn ? (
+                <>
+                  <Route path="/Room" element={<Room />} />
+                  <Route path="/HotelRoom" element={<HotelRoom />} />
+                  <Route path="/Bookings" element={<Bookings />} />
+                  <Route path="/Contact" element={<Contact />} />
+                  <Route path="/Contact/archive" element={<ContactArchive />} />
+                  <Route path="/Users" element={<Users />} />
+                  {/* Redirige a Room por defecto si está logueado */}
+                  <Route path="*" element={<Navigate to="/Room" />} />
+                </>
+              ) : (
+                // Si no está logueado, redirige a login
+                <Route path="*" element={<Navigate to="/login" />} />
+              )}
             </Routes>
           </MainContent>
         </Container>
       </BrowserRouter>
     </>
-  )
+  );
 }
-
-export default App
-
 
 
 const Container = styled.div`
