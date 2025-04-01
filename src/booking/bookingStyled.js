@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 
+
 export const BookingUser = styled.div`
     span{
         padding-right: .3rem;
@@ -58,4 +59,19 @@ export const StatusBooking = styled.p`
   text-align: center;
 `
 
+export const MenuTable = styled.div`
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+`
+
+export const AddBooking = styled.button`
+    background-color: #135846;
+    color: #FFFFFF;
+    font-size: 16px;
+    border-radius: 12px;
+    padding: 0.5rem 1rem;
+    border:0;
+    height: min-content;
+`
 

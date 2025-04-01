@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Table from "../components/Table/Table";
-import { useLocation } from "react-router-dom";
-import { BookingUser, RoomId, ButtonModal, StatusBooking } from "./bookingStyled";
+import { useNavigate } from 'react-router-dom';
+import { BookingUser, RoomId, ButtonModal, StatusBooking, MenuTable, AddBooking } from "./bookingStyled";
 import { Modal } from "./components/modal";
 import { Filter } from "../components/filter/Filter";
 
@@ -10,6 +10,7 @@ export const Bookings = () => {
     const [filteredBooking, setFilteredBooking] = useState([]);
     const [open, setopen] = useState(false);
     const [activeFilter, setActiveFilter] = useState("All");
+    const navigate = useNavigate();
 
     useEffect(() => {
         fetch('../../Booking.json')
@@ -55,12 +56,20 @@ export const Bookings = () => {
         { value: "In Progress", label: "In Progress" },
     ];
 
+    const addBooking = () => {
+        navigate('/Bookings/NewBooking');
+      };
+
     return (
         <div>
-            <Filter
-                options={menuOptions}
-                selected={activeFilter}
-                onSelect={handleFilter} />
+            <MenuTable>
+                <Filter
+                    options={menuOptions}
+                    selected={activeFilter}
+                    onSelect={handleFilter} />
+                <AddBooking onClick={addBooking}>+ Add new</AddBooking>
+            </MenuTable>
+
             <Table
                 columns={columns}
                 data={filteredBooking}
