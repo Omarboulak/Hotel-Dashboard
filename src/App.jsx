@@ -13,24 +13,27 @@ import { HotelRoom } from './hotelRoom/HotelRoom';
 import { Login } from './login/Login';
 
 export const App = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false); // Estado de inicio de sesión
+  const [isLoggedIn, setIsLoggedIn] = useState(false); 
+
+  const handleLogOut = () => {
+    setIsLoggedIn(false); 
+  };
 
   return (
     <>
       <GlobalStyle />
       <BrowserRouter>
         <Container>
-          {/* Solo muestra Menu y Header si el usuario está logueado */}
           {isLoggedIn && <Menu />}
           <MainContent>
-            {isLoggedIn && <Header />}
+            {isLoggedIn && <Header  onLogOut={handleLogOut}/>}
             <Routes>
-              {/* Ruta de Login */}
+            
               <Route
                 path="/login"
                 element={<Login onLogin={() => setIsLoggedIn(true)} />}
               />
-              {/* Rutas protegidas */}
+             
               {isLoggedIn ? (
                 <>
                   <Route path="/Room" element={<Room />} />
@@ -39,11 +42,11 @@ export const App = () => {
                   <Route path="/Contact" element={<Contact />} />
                   <Route path="/Contact/archive" element={<ContactArchive />} />
                   <Route path="/Users" element={<Users />} />
-                  {/* Redirige a Room por defecto si está logueado */}
+                  
                   <Route path="*" element={<Navigate to="/Room" />} />
                 </>
               ) : (
-                // Si no está logueado, redirige a login
+               
                 <Route path="*" element={<Navigate to="/login" />} />
               )}
             </Routes>
