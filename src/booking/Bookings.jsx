@@ -4,20 +4,18 @@ import { useNavigate } from 'react-router-dom';
 import { BookingUser, RoomId, ButtonModal, StatusBooking, MenuTable, AddBooking } from "./bookingStyled";
 import { Modal } from "./components/modal";
 import { Filter } from "../components/filter/Filter";
+import { useSelector } from "react-redux";
 
 export const Bookings = () => {
-    const [booking, setBooking] = useState([]);
-    const [filteredBooking, setFilteredBooking] = useState([]);
     const [open, setopen] = useState(false);
     const [activeFilter, setActiveFilter] = useState("All");
     const navigate = useNavigate();
+    const bookings = useSelector((state) => state.newBooking.value);
+    const [filteredBooking, setFilteredBooking] = useState(bookings);
 
     useEffect(() => {
-        fetch('../../Booking.json')
-            .then((response) => response.json())
-            .then((data) => setBooking(data))
-            .catch((error) => console.error("Error cargando datos:", error));
-    }, []);
+        setFilteredBooking(bookings)
+    }, [bookings]);
 
     const columns = [
         { header: 'Guest', accessor: 'Guest' },
@@ -38,11 +36,11 @@ export const Bookings = () => {
         setopen(false);
     };
 
-    const selectedBooking = booking.find(item => item.ID === open);
+    const selectedBooking = bookings.find(item => item.ID === open);
 
     const handleFilter = (status) => {
         if (status === 'All') {
-            setFilteredBooking(booking);
+            setFilteredBooking(bookings);
         } else {
             const filtered = booking.filter(cell => cell.Status === status);
             setFilteredBooking(filtered)

@@ -14,6 +14,12 @@ export const newBookingSlice = createSlice({
     name: "newBooking",
     initialState,
 
+    reducers:{
+        addBooking: (state, action) => {
+            state.value.push(action.payload);
+        }
+    },
+
     extraReducers: builder => {
         builder
             .addCase(newBooking.pending, state => {
@@ -22,8 +28,7 @@ export const newBookingSlice = createSlice({
             })
             .addCase(newBooking.fulfilled, (state, action) => {
                 state.status = "idle"
-                const newB = action.payload
-                state.value = {...state.value, ...newB}
+                state.value = action.payload
                 state.loading = false;
             })
             .addCase(newBooking.rejected, state => {
@@ -33,4 +38,5 @@ export const newBookingSlice = createSlice({
     },
 })
 
+export const {addBooking} = newBookingSlice.actions;
 export default newBookingSlice.reducer;

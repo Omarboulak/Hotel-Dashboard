@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {FormContainer, FormTitle, Form, Label, Input, SubmitButton, Textarea} from './newBookingStyled'
 import { newBooking } from '../redux/bookingSlice';
+import { addBooking } from '../redux/bookingSlice';
 import { useDispatch, useSelector } from "react-redux";
 
 export const NewBooking = () => {
@@ -20,22 +21,18 @@ export const NewBooking = () => {
     RoomNumber: '',
     Status: ''
   });
-
+  
   const handleChange = (e) => {
     setFormData({...formData, [e.target.name]: e.target.value});
   };
-
-  useEffect(() =>{
-    if (status === 'idle') {
-      dispatch(newBooking)
-    }
-  },[formData])
-
+  
   const handleSubmit = (e) => {
     e.preventDefault();
+    dispatch(addBooking(formData))
     navigate('/Bookings');
   };
 
+  
   return (
     <FormContainer>
       <FormTitle>Add New Booking</FormTitle>
