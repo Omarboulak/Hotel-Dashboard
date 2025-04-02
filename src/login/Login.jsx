@@ -3,14 +3,14 @@ import { Container, Headline, Box, Input, LoginButton, Text, GradientBackground 
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 
-export const Login = ({onLogin}) => {
+export const Login = ({isLogin}) => {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const handleLogin = () => {
-    if (email === "user" && password === "123") {
-      onLogin();
+    if (email === "123" && password === "123") {
+      isLogin();
       navigate("/Room");
     } else {
       alert("El usuario no existe");

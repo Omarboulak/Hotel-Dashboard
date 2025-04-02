@@ -27,12 +27,12 @@ export const App = () => {
         <Container>
           {isLoggedIn && <Menu />}
           <MainContent>
-            {isLoggedIn && <Header  onLogOut={handleLogOut}/>}
+            {isLoggedIn && <Header  isLogOut={handleLogOut}/>}
             <Routes>
             
               <Route
                 path="/login"
-                element={<Login onLogin={() => setIsLoggedIn(true)} />}
+                element={<Login isLogin={() => setIsLoggedIn(true)} />}
               />
              
               {isLoggedIn ? (
