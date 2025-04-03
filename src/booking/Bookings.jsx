@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Table from "../components/Table/Table";
 import { useNavigate } from 'react-router-dom';
-import { BookingUser, RoomId, ButtonModal, StatusBooking, MenuTable, AddBooking } from "./bookingStyled";
+import { BookingUser, RoomId, ButtonModal, StatusBooking, MenuTable, Add } from "./bookingStyled";
 import { Modal } from "./components/modal";
 import { Filter } from "../components/filter/Filter";
 import { useDispatch, useSelector } from "react-redux";
@@ -74,7 +74,7 @@ export const Bookings = () => {
                     options={menuOptions}
                     selected={activeFilter}
                     onSelect={handleFilter} />
-                <AddBooking onClick={addBooking}>+ Add new</AddBooking>
+                <Add onClick={addBooking}>+ Add new</Add>
             </MenuTable>
 
             <Table

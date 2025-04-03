@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import {FormContainer, FormTitle, Form, Label, Input, SubmitButton, Textarea} from './newBookingStyled'
+import {FormContainer, FormTitle, Form, Label, Input, SubmitButton, Textarea} from '../../components/styledFrom'
 import { newBooking } from '../redux/bookingSlice';
 import { addBooking } from '../redux/bookingSlice';
 import { useDispatch, useSelector } from "react-redux";

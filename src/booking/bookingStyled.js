@@ -65,7 +65,7 @@ export const MenuTable = styled.div`
     align-items: end;
 `
 
-export const AddBooking = styled.button`
+export const Add = styled.button`
     background-color: #135846;
     color: #FFFFFF;
     font-size: 16px;

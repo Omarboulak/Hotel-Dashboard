@@ -12,6 +12,7 @@ import { Users } from './users/Users';
 import { HotelRoom } from './hotelRoom/HotelRoom';
 // import { Login } from './login/Login';
 import { NewBooking } from './booking/components/NewBooking';
+import { NewUsers } from './users/components/NewUsers';
 
 export const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false); 
@@ -44,6 +45,7 @@ export const App = () => {
                   <Route path="/Contact" element={<Contact />} />
                   <Route path="/Contact/archive" element={<ContactArchive />} />
                   <Route path="/Users" element={<Users />} />
+                  <Route path="/Users/NewUsers" element={<NewUsers />} />
                   
                   <Route path="*" element={<Navigate to="/Room" />} />
                 </>
