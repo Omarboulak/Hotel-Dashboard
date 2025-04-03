@@ -28,7 +28,11 @@ export const NewBooking = () => {
   
   const handleSubmit = (e) => {
     e.preventDefault();
-    dispatch(addBooking(formData))
+    const newData = { 
+      ...formData, 
+      ID: Number(formData.ID)  
+    };
+    dispatch(addBooking(newData))
     navigate('/Bookings');
   };
 

@@ -52,8 +52,8 @@ export const ModalContainer = styled.div`
 `
 
 export const StatusBooking = styled.p`
-  background-color: ${(props) => props.status === 'Check In' ? '#E8FFEE' : props.status === 'Check Out' ? '#FFEDEC' : '#f8f9bb'};
-  color: ${(props) => props.status === 'Check In' ? '#5AD07A' : props.status === 'Check Out' ? '#E23428' : '#615b06'};
+  background-color: ${(props) => props.status === 'CheckIn' ? '#E8FFEE' : props.status === 'CheckOut' ? '#FFEDEC' : '#f8f9bb'};
+  color: ${(props) => props.status === 'CheckIn' ? '#5AD07A' : props.status === 'CheckOut' ? '#E23428' : '#615b06'};
   padding: .5rem 1rem;
   border-radius: 12px;
   text-align: center;

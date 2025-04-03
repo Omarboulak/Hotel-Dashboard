@@ -4,9 +4,11 @@ import { useNavigate } from 'react-router-dom';
 import { BookingUser, RoomId, ButtonModal, StatusBooking, MenuTable, AddBooking } from "./bookingStyled";
 import { Modal } from "./components/modal";
 import { Filter } from "../components/filter/Filter";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { newBooking } from "./redux/bookingSlice";
 
 export const Bookings = () => {
+    const dispatch = useDispatch();
     const [open, setopen] = useState(false);
     const [activeFilter, setActiveFilter] = useState("All");
     const navigate = useNavigate();
@@ -14,19 +16,26 @@ export const Bookings = () => {
     const [filteredBooking, setFilteredBooking] = useState(bookings);
 
     useEffect(() => {
-        setFilteredBooking(bookings)
-    }, [bookings]);
+        if (bookings.length === 0) {
+            dispatch(newBooking());
+        }
+    }, [dispatch, bookings.length]);
+
+    useEffect(() => {
+        setFilteredBooking(bookings);
+        console.log(bookings);
+    }, []);
+
 
     const columns = [
         { header: 'Guest', accessor: 'Guest' },
-        { header: 'Order Date', accessor: 'Order Date' },
-        { header: 'Check in', accessor: 'Check in' },
-        { header: 'Special Request', accessor: 'Special Request' },
-        { header: 'Room Type', accessor: 'Room Type' },
+        { header: 'OrderDate', accessor: 'OrderDate' },
+        { header: 'CheckIn', accessor: 'CheckIn' },
+        { header: 'CheckOut', accessor: 'CheckOut' },
+        { header: 'SpecialRequest', accessor: 'SpecialRequest' },
+        { header: 'RoomType', accessor: 'RoomType' },
         { header: 'Status', accessor: 'Status' },
     ];
-
-
 
     const openPopup = (bookingId) => {
         setopen(bookingId);
@@ -42,21 +51,21 @@ export const Bookings = () => {
         if (status === 'All') {
             setFilteredBooking(bookings);
         } else {
-            const filtered = booking.filter(cell => cell.Status === status);
+            const filtered = bookings.filter(cell => cell.Status === status);
             setFilteredBooking(filtered)
         }
     }
 
     const menuOptions = [
         { value: "All", label: "All" },
-        { value: "Check In", label: "Check In" },
-        { value: "Check Out", label: "Check Out" },
+        { value: "CheckIn", label: "CheckIn" },
+        { value: "CheckOut", label: "CheckOut" },
         { value: "In Progress", label: "In Progress" },
     ];
 
     const addBooking = () => {
         navigate('/Bookings/NewBooking');
-      };
+    };
 
     return (
         <div>
@@ -81,7 +90,7 @@ export const Bookings = () => {
                             </BookingUser>
                         );
                     }
-                    if (col.accessor === 'Special Request') {
+                    if (col.accessor === 'SpecialRequest') {
                         return (
                             <ButtonModal onClick={() => openPopup(row.ID)}>View Notes</ButtonModal>
                         )
@@ -89,8 +98,8 @@ export const Bookings = () => {
                     if (col.accessor === 'Status') {
                         return <StatusBooking status={row[col.accessor]}>{row[col.accessor]}</StatusBooking>;
                     }
-                    if (col.accessor === 'Room Type') {
-                        return <p>{row['Room Type']} - {row['Room Number']}</p>;
+                    if (col.accessor === 'RoomType') {
+                        return <p>{row['RoomType']} - {row['RoomNumber']}</p>;
                     }
                     return row[col.accessor];
                 }}
@@ -98,7 +107,7 @@ export const Bookings = () => {
             {selectedBooking && (
                 <Modal
                     closeModal={closePopup}
-                    request={selectedBooking['Special Request']}
+                    request={selectedBooking['SpecialRequest']}
                 />
             )}
         </div>

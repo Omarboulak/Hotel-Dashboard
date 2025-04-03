@@ -10,7 +10,7 @@ import { ContactArchive } from './Contact/Compnents/ContactArchive';
 import { Bookings } from './booking/Bookings';
 import { Users } from './users/Users';
 import { HotelRoom } from './hotelRoom/HotelRoom';
-import { Login } from './login/Login';
+// import { Login } from './login/Login';
 import { NewBooking } from './booking/components/NewBooking';
 
 export const App = () => {
@@ -25,17 +25,17 @@ export const App = () => {
       <GlobalStyle />
       <BrowserRouter>
         <Container>
-          {isLoggedIn && <Menu />}
+          <Menu />
           <MainContent>
-            {isLoggedIn && <Header  isLogOut={handleLogOut}/>}
+            <Header  isLogOut={handleLogOut}/>
             <Routes>
             
-              <Route
+              {/* <Route
                 path="/login"
                 element={<Login isLogin={() => setIsLoggedIn(true)} />}
-              />
+              /> */}
              
-              {isLoggedIn ? (
+             
                 <>
                   <Route path="/Room" element={<Room />} />
                   <Route path="/HotelRoom" element={<HotelRoom />} />
@@ -47,10 +47,7 @@ export const App = () => {
                   
                   <Route path="*" element={<Navigate to="/Room" />} />
                 </>
-              ) : (
-               
-                <Route path="*" element={<Navigate to="/login" />} />
-              )}
+          
             </Routes>
           </MainContent>
         </Container>

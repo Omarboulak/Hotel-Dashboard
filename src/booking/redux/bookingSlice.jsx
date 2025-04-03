@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
 
 export const newBooking = createAsyncThunk('booking/add', async () =>{
-    const response = await fetch('../../../../public/Booking.json');
+    const response = await fetch('/Booking.json');
     return await response.json();
 })
 
