@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {FormContainer, FormTitle, Form, Label, Input, SubmitButton, Textarea} from '../../components/styledFrom'
-import { newBooking } from '../redux/bookingSlice';
+import { addBookingFetch } from '../redux/bookinThunk';
 import { addBooking } from '../redux/bookingSlice';
 import { useDispatch, useSelector } from "react-redux";
 
@@ -35,6 +35,7 @@ export const NewBooking = () => {
     dispatch(addBooking(newData))
     navigate('/Bookings');
   };
+
 
   
   return (

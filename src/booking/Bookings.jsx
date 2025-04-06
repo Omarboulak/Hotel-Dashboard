@@ -5,29 +5,28 @@ import { BookingUser, RoomId, ButtonModal, StatusBooking, MenuTable, Add } from 
 import { Modal } from "./components/modal";
 import { Filter } from "../components/filter/Filter";
 import { useDispatch, useSelector } from "react-redux";
-import { newBooking } from "./redux/bookingSlice";
+import { addBookingFetch, deleteBookingFetch } from "./redux/bookinThunk";
 
 export const Bookings = () => {
     const dispatch = useDispatch();
+    const navigate = useNavigate();
     const [open, setopen] = useState(false);
     const [activeFilter, setActiveFilter] = useState("All");
-    const navigate = useNavigate();
     const bookings = useSelector((state) => state.newBooking.value);
     const [filteredBooking, setFilteredBooking] = useState(bookings);
+    const [selectRow, setSelectRow] = useState([]);
+    const selectedBooking = bookings.find(item => item.ID === open);
+    const addBooking = () => navigate('/Bookings/NewBooking');
 
-    useEffect(() => {
-        if (bookings.length === 0) {
-            dispatch(newBooking());
-        }
-    }, [dispatch, bookings.length]);
-
-    useEffect(() => {
-        setFilteredBooking(bookings);
-        console.log(bookings);
-    }, []);
-
+    const menuOptions = [
+        { value: "All", label: "All" },
+        { value: "CheckIn", label: "CheckIn" },
+        { value: "CheckOut", label: "CheckOut" },
+        { value: "In Progress", label: "In Progress" },
+    ];
 
     const columns = [
+        { header: 'Select', accessor: 'select' },
         { header: 'Guest', accessor: 'Guest' },
         { header: 'OrderDate', accessor: 'OrderDate' },
         { header: 'CheckIn', accessor: 'CheckIn' },
@@ -37,15 +36,16 @@ export const Bookings = () => {
         { header: 'Status', accessor: 'Status' },
     ];
 
-    const openPopup = (bookingId) => {
-        setopen(bookingId);
-    };
+    useEffect(() => {
+        if (bookings.length === 0) {
+            dispatch(addBookingFetch());
+        }
+        setFilteredBooking(bookings);
+    }, [dispatch, bookings]);
 
-    const closePopup = () => {
-        setopen(false);
-    };
+    const openPopup = (bookingId) => setopen(bookingId);
+    const closePopup = () => setopen(false);
 
-    const selectedBooking = bookings.find(item => item.ID === open);
 
     const handleFilter = (status) => {
         if (status === 'All') {
@@ -56,15 +56,23 @@ export const Bookings = () => {
         }
     }
 
-    const menuOptions = [
-        { value: "All", label: "All" },
-        { value: "CheckIn", label: "CheckIn" },
-        { value: "CheckOut", label: "CheckOut" },
-        { value: "In Progress", label: "In Progress" },
-    ];
+    const handleDelete = () => {
+        if (selectRow.length === 0) {
+            alert("No se ha seleccionado ninguna fila.");
+            return;
+        }
+        selectRow.forEach(id => {
+            dispatch(deleteBookingFetch(id));
+        });
+        setSelectRow([]);
+    };
 
-    const addBooking = () => {
-        navigate('/Bookings/NewBooking');
+    const handleCheckbox = (e, id) => {
+        if (e.target.checked) {
+            setSelectRow(prev => [...prev, id])
+        } else {
+            setSelectRow(prev => prev.filter(selectedId => selectedId !== id));
+        }
     };
 
     return (
@@ -75,6 +83,8 @@ export const Bookings = () => {
                     selected={activeFilter}
                     onSelect={handleFilter} />
                 <Add onClick={addBooking}>+ Add new</Add>
+                <Add onClick={addBooking}>Edit</Add>
+                <Add onClick={handleDelete}>Delete</Add>
             </MenuTable>
 
             <Table
@@ -100,6 +110,12 @@ export const Bookings = () => {
                     }
                     if (col.accessor === 'RoomType') {
                         return <p>{row['RoomType']} - {row['RoomNumber']}</p>;
+                    }
+                    if (col.accessor === 'select') {
+                        return <input 
+                                    type="checkbox"
+                                    checked={selectRow.includes(row.id)}
+                                    onChange={(e) => handleCheckbox(e, row.ID)} />
                     }
                     return row[col.accessor];
                 }}

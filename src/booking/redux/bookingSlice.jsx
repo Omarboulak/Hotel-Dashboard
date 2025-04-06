@@ -1,9 +1,5 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
-
-export const newBooking = createAsyncThunk('booking/add', async () =>{
-    const response = await fetch('/Booking.json');
-    return await response.json();
-})
+import { createSlice } from "@reduxjs/toolkit"
+import { addBookingFetch, updateBookingFetch, deleteBookingFetch } from "./bookinThunk";
 
 const initialState = {
     value: [],
@@ -22,16 +18,47 @@ export const newBookingSlice = createSlice({
 
     extraReducers: builder => {
         builder
-            .addCase(newBooking.pending, state => {
+            .addCase(addBookingFetch.pending, state => {
                 state.status = "loading"
                 state.error = null;
             })
-            .addCase(newBooking.fulfilled, (state, action) => {
+            .addCase(addBookingFetch.fulfilled, (state, action) => {
                 state.status = "idle"
                 state.value = action.payload
                 state.loading = false;
             })
-            .addCase(newBooking.rejected, state => {
+            .addCase(addBookingFetch.rejected, state => {
+                state.status = "failed"
+                state.error = null;
+            })
+
+            .addCase(updateBookingFetch.pending, state => {
+                state.status = "loading"
+                state.error = null;
+            })
+            .addCase(updateBookingFetch.fulfilled, (state, action) => {
+                state.status = "idle"
+                const index =  state.value.findIndex(room => room.id === action.payload.id);
+                if (index !== -1) {
+                    state.rooms[index] = action.payload
+                }   
+                state.loading = false;
+            })
+            .addCase(updateBookingFetch.rejected, state => {
+                state.status = "failed"
+                state.error = null;
+            })
+
+            .addCase(deleteBookingFetch.pending, state => {
+                state.status = "loading"
+                state.error = null;
+            })
+            .addCase(deleteBookingFetch.fulfilled, (state, action) => {
+                state.status = "idle"
+                state.value = state.value.filter(cell => cell.ID !== action.payload)
+                state.loading = false;
+            })
+            .addCase(deleteBookingFetch.rejected, state => {
                 state.status = "failed"
                 state.error = null;
             })
