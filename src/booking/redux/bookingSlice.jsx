@@ -37,11 +37,10 @@ export const newBookingSlice = createSlice({
                 state.error = null;
             })
             .addCase(updateBookingFetch.fulfilled, (state, action) => {
-                state.status = "idle"
-                const index =  state.value.findIndex(room => room.id === action.payload.id);
-                if (index !== -1) {
-                    state.rooms[index] = action.payload
-                }   
+                const { id, editRow } = action.payload;
+                state.value = state.value.map((row) =>
+                    row.id === id ? { ...state, ...editRow } : row
+                );
                 state.loading = false;
             })
             .addCase(updateBookingFetch.rejected, state => {

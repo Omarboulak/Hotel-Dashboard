@@ -12,6 +12,7 @@ import { Users } from './users/Users';
 import { HotelRoom } from './hotelRoom/HotelRoom';
 // import { Login } from './login/Login';
 import { NewBooking } from './booking/components/NewBooking';
+import { EditBooking } from './booking/components/EditBooking';
 import { NewUsers } from './users/components/NewUsers';
 
 export const App = () => {
@@ -42,6 +43,7 @@ export const App = () => {
                   <Route path="/HotelRoom" element={<HotelRoom />} />
                   <Route path="/Bookings" element={<Bookings />} />
                   <Route path="/Bookings/NewBooking" element={<NewBooking />} />
+                  <Route path="/Bookings/EditBooking" element={<NewBooking />} />
                   <Route path="/Contact" element={<Contact />} />
                   <Route path="/Contact/archive" element={<ContactArchive />} />
                   <Route path="/Users" element={<Users />} />
