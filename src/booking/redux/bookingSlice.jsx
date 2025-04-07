@@ -39,7 +39,7 @@ export const newBookingSlice = createSlice({
             .addCase(updateBookingFetch.fulfilled, (state, action) => {
                 const { id, editRow } = action.payload;
                 state.value = state.value.map((row) =>
-                    row.id === id ? { ...state, ...editRow } : row
+                    row.ID === id ? { ...row, ...editRow } : row
                 );
                 state.loading = false;
             })
@@ -47,7 +47,6 @@ export const newBookingSlice = createSlice({
                 state.status = "failed"
                 state.error = null;
             })
-
             .addCase(deleteBookingFetch.pending, state => {
                 state.status = "loading"
                 state.error = null;

@@ -1,25 +1,24 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import {FormContainer, FormTitle, Form, Label, Input, SubmitButton, Textarea} from '../../components/styledFrom'
-import { addBookingFetch } from '../redux/bookinThunk';
-import { addBooking } from '../redux/bookingSlice';
 import { useDispatch, useSelector } from "react-redux";
+import { updateBookingFetch } from '../redux/bookinThunk';
 
 export const EditBooking = () => {
   const navigate = useNavigate();  
   const dispatch = useDispatch();
-  const [formData, setFormData] = useState({
-    First_Name: '',
-    Last_Name: '',
-    ID: '',
-    OrderDate: '',
-    CheckIn: '',
-    CheckOut: '',
-    SpecialRequest: '',
-    RoomType: '',
-    RoomNumber: '',
-    Status: ''
-  });
+  const { bookingId } = useParams();
+  const [formData, setFormData] = useState({});
+  
+  const booking = useSelector(state =>
+    state.newBooking.value.find(b => b.ID === Number(bookingId))
+  );
+
+  useEffect(() => {
+    if (booking) {
+      setFormData(booking);
+    }
+  }, [booking]);
   
   const handleChange = (e) => {
     setFormData({...formData, [e.target.name]: e.target.value});
@@ -27,11 +26,8 @@ export const EditBooking = () => {
   
   const handleSubmit = (e) => {
     e.preventDefault();
-    const newData = { 
-      ...formData, 
-      ID: Number(formData.ID)  
-    };
-    dispatch(addBooking(newData))
+    const updatedData = { ...formData, ID: Number(formData.ID) };
+    dispatch(updateBookingFetch({ id: Number(bookingId), bookingData: updatedData }));
     navigate('/Bookings');
   };
 
@@ -46,7 +42,7 @@ export const EditBooking = () => {
           <Input 
             type="text" 
             name="First_Name" 
-            value={formData.First_Name} 
+            value={formData.First_Name }
             onChange={handleChange} 
           />
         </Label>
@@ -55,7 +51,7 @@ export const EditBooking = () => {
           <Input 
             type="text" 
             name="Last_Name" 
-            value={formData.Last_Name} 
+            value={formData.Last_Name } 
             onChange={handleChange} 
           />
         </Label>
@@ -64,7 +60,7 @@ export const EditBooking = () => {
           <Input 
             type="number" 
             name="ID" 
-            value={formData.ID} 
+            value={formData.ID }
             onChange={handleChange} 
           />
         </Label>
@@ -73,7 +69,7 @@ export const EditBooking = () => {
           <Input 
             type="date" 
             name="OrderDate" 
-            value={formData.OrderDate} 
+            value={formData.OrderDate }
             onChange={handleChange} 
           />
         </Label>
@@ -82,7 +78,7 @@ export const EditBooking = () => {
           <Input 
             type="date" 
             name="CheckIn" 
-            value={formData.CheckIn} 
+            value={formData.CheckIn }
             onChange={handleChange} 
           />
         </Label>
@@ -91,7 +87,7 @@ export const EditBooking = () => {
           <Input 
             type="date" 
             name="CheckOut" 
-            value={formData.CheckOut} 
+            value={formData.CheckOut } 
             onChange={handleChange} 
           />
         </Label>
@@ -99,7 +95,7 @@ export const EditBooking = () => {
           Special Request:
           <Textarea 
             name="SpecialRequest" 
-            value={formData.SpecialRequest} 
+            value={formData.SpecialRequest }
             onChange={handleChange} 
           />
         </Label>
@@ -108,7 +104,7 @@ export const EditBooking = () => {
           <Input 
             type="text" 
             name="RoomType" 
-            value={formData.RoomType} 
+            value={formData.RoomType } 
             onChange={handleChange} 
           />
         </Label>
@@ -117,7 +113,7 @@ export const EditBooking = () => {
           <Input 
             type="number" 
             name="RoomNumber" 
-            value={formData.RoomNumber} 
+            value={formData.RoomNumber }
             onChange={handleChange} 
           />
         </Label>
@@ -126,7 +122,7 @@ export const EditBooking = () => {
           <Input 
             type="text" 
             name="Status" 
-            value={formData.Status} 
+            value={formData.Status } 
             onChange={handleChange} 
           />
         </Label>

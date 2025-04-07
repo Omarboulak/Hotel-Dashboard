@@ -5,7 +5,7 @@ import { BookingUser, RoomId, ButtonModal, StatusBooking, MenuTable, Add } from 
 import { Modal } from "./components/modal";
 import { Filter } from "../components/filter/Filter";
 import { useDispatch, useSelector } from "react-redux";
-import { addBookingFetch, deleteBookingFetch, updateBookingFetch } from "./redux/bookinThunk";
+import { addBookingFetch, deleteBookingFetch } from "./redux/bookinThunk";
 
 export const Bookings = () => {
     const dispatch = useDispatch();
@@ -17,7 +17,7 @@ export const Bookings = () => {
     const [selectRow, setSelectRow] = useState([]);
     const selectedBooking = bookings.find(item => item.ID === open);
     const addBooking = () => navigate('/Bookings/NewBooking');
-    const editBooking = () => navigate('/Bookings/EditBooking');
+    const editBooking = (id) => navigate(`/Bookings/EditBooking/${id}`);
 
     const menuOptions = [
         { value: "All", label: "All" },
@@ -59,7 +59,7 @@ export const Bookings = () => {
 
     const handleDelete = () => {
         if (selectRow.length === 0) {
-            alert("No se ha seleccionado ninguna fila.");
+            alert("No se ha seleccionado ninguna fila");
             return;
         }
         selectRow.forEach(id => {
@@ -67,6 +67,19 @@ export const Bookings = () => {
         });
         setSelectRow([]);
     };
+
+    const handleUpdate = () =>{
+        if (selectRow.length === 0) {
+            alert("No se ha seleccionado ninguna fila");
+            return;
+        }
+        else if (selectRow.length > 1) {
+            alert("No se puede seleccionar mas de una fila fila");
+            return;
+        } else {
+            editBooking(selectRow[0]);
+        }
+    }
 
     const handleCheckbox = (e, id) => {
         if (e.target.checked) {
@@ -84,7 +97,7 @@ export const Bookings = () => {
                     selected={activeFilter}
                     onSelect={handleFilter} />
                 <Add onClick={addBooking}>+ Add new</Add>
-                <Add onClick={editBooking}>Edit</Add>
+                <Add onClick={(newUpdate) => handleUpdate(bookings.ID, newUpdate)}>Edit</Add>
                 <Add onClick={handleDelete}>Delete</Add>
             </MenuTable>
 
@@ -113,10 +126,10 @@ export const Bookings = () => {
                         return <p>{row['RoomType']} - {row['RoomNumber']}</p>;
                     }
                     if (col.accessor === 'select') {
-                        return <input 
-                                    type="checkbox"
-                                    checked={selectRow.includes(row.ID)}
-                                    onChange={(e) => handleCheckbox(e, row.ID)} />
+                        return <input
+                            type="checkbox"
+                            checked={selectRow.includes(row.ID)}
+                            onChange={(e) => handleCheckbox(e, row.ID)} />
                     }
                     return row[col.accessor];
                 }}
