@@ -1,89 +1,97 @@
 import Room from "../src/class/rooms";
 import Booking from "../src/class/booking";
 
-describe('propiedades de la clase de Rooms', () =>{
-    it('El nombre introducido es un string', () =>{
-        const booking = new Booking();
-        const room = new Room('double', Booking, 100, 10);
-        expect(typeof room.name).toBe('string')
-    })
+const booking = [
+  new Booking(
+    'Omar',
+    'omarboulakchour@gmail.com',
+    new Date(2025, 11, 12),
+    new Date(2025, 11, 15),
+    10,
+    null
+  ),
+  new Booking(
+    'pepe',
+    'pepe@gmail.com',
+    new Date(2025, 11, 20),
+    new Date(2025, 11, 22),
+    5,
+    null
+  )
+];
 
-    it('Los Booking tiene que ser un array', () => {
-        const booking = new Booking();
-        const room = new Room('double', Booking, 100, 10);
-        expect(Array.isArray(room.Booking)).toBe(true);
-    })
+describe('propiedades de la clase de Rooms', () => {
+  it('El nombre introducido es un string', () => {
+    const room = new Room('double', booking, 100, 10);
+    expect(typeof room.name).toBe('string');
+  });
 
-    it('El rate tiene que ser un numero', () => {
-        const booking = new Booking();
-        const room = new Room('double', Booking, 100, 10);
-        expect(typeof room.rate).toBe('number');
-        expect(room.rate).toBeGreaterThanOrEqual(0);
-    })
+  it('Los Booking tienen que ser un array', () => {
+    const room = new Room('double', booking, 100, 10);
+    expect(Array.isArray(room.bookings)).toBe(true);
+  });
+  
+  it('El rate tiene que ser un numero', () => {
+    const room = new Room('double', [booking[0]], 100, 10);
+    expect(typeof room.rate).toBe('number');
+  });
+  
+  it('El rate tiene que ser mayor o igual a 0', () => {
+    const room = new Room('double', booking[0], 100, 10);
+    expect(room.rate).toBeGreaterThanOrEqual(0);
+  });
 
-    it('El discount tiene que ser un nuemero del 0 al 100', () => {
-        const booking = new Booking();
-        const room = new Room('double', Booking, 100, 10);
-        expect(room.discount).toBeGreaterThanOrEqual(0);
-        expect(room.discount).toBeLessThanOrEqual(100);
-    })
+  it('El discount tiene que ser un numero entre 0 y 100', () => {
+    const room = new Room('double', booking[0], 100, 10);
+    expect(room.discount).toBeGreaterThanOrEqual(0);
+  });
 
-    it('el metodo isOccupied tiene que ser booleano', () => {
-        const booking = new Booking();
-        const room = new Room('double', Booking, 100, 10);
-        expect(typeof room.isOccupied('12/12/2025')).toBe('boolean');
-    })
+  it('El discount tiene que ser un numero entre 0 y 100', () => {
+    const room = new Room('double', booking[0], 100, 10);
+    expect(room.discount).toBeLessThanOrEqual(100);
+  });
 
-    it('el metodo occupancyPercentage tiene que devolver un numero', () => {
-        const booking = new Booking();
-        const room = new Room('double', Booking, 100, 10);
-        expect(typeof room.occupancyPercentage('12/12/2025', '12/15/2025')).toBe('number');
-    })
+  it('El método isOccupied tiene que devolver un booleano', () => {
+    const room = new Room('double', [booking[0]], 100, 10);
+    expect(typeof room.isOccupied(new Date(2025, 11, 12))).toBe('boolean');
+  });
 
-    it('el metodo totalOccupancyPercentage tiene que devolver un numero', () => {
-        const booking = new Booking();
-        const room = new Room('double', Booking, 100, 10);
-        expect(room.totalOccupancyPercentage('double', '12/12/2025', '12/15/2025')).toBeGreaterThanOrEqual(0);
-    })
+  it('El método occupancyPercentage tiene que devolver un numero', () => {
+    const room = new Room('double', [booking[0]], 100, 10);
+    expect(typeof room.occupancyPercentage(new Date(2025, 11, 12), new Date(2025, 11, 15))).toBe('number');
+  });
 
-    it('el metodo availableRooms tiene que devolver un numero', () => {
-        const booking = new Booking();
-        const room = new Room('double', Booking, 100, 10);
-        expect(Array.isArray(room.availableRooms('double', '12/12/2025', '12/15/2025'))).toBe('array');
-    })
-})
+  it('El método totalOccupancyPercentage tiene que devolver un numero', () => {
+    const room = new Room('double', [booking[0]], 100, 10);
+    expect(Room.totalOccupancyPercentage([room], new Date(2025, 11, 12), new Date(2025, 11, 15)))
+      .toBeGreaterThanOrEqual(0);
+  });
 
+  it('El método availableRooms tiene que devolver un array', () => {
+    const room = new Room('double',[booking[0]], 100, 10);
+    expect(Array.isArray(Room.availableRooms([room], new Date(2025, 11, 12), new Date(2025, 11, 15))))
+      .toBe(true);
+  });
+});
 
-describe('propiedades de la clase de Booking', () =>{
-    it('El nombre introducido de booking tiene que ser un string', () =>{
-        const room = new Room('double', Booking, 100, 10);
-        const booking = new Booking('Omar', 'omarboulakchour@gmail.com', '12/12/2025', '12/15/2025', 10);
-        expect(typeof Booking.name).toBe('string')
-    })
+describe('propiedades de la clase de Booking', () => {
+  it('El nombre introducido en booking tiene que ser un string', () => {
+    expect(typeof booking[0].name).toBe('string');
+  });
 
-    it('El empail introducido de booking tiene que ser un string', () =>{
-        const room = new Room('double', Booking, 100, 10);
-        const booking = new Booking('Omar', 'omarboulakchour@gmail.com', '12/12/2025', '12/15/2025', 10);
-        expect(typeof Booking.email).toBe('string')
-    })
+  it('El email introducido en booking tiene que ser un string', () => {
+    expect(typeof booking[0].email).toBe('string');
+  });
 
-    it('El checkIn introducido tiene que ser un date', () =>{
-        const room = new Room('double', Booking, 100, 10);
-        const booking = new Booking('Omar', 'omarboulakchour@gmail.com', '12/12/2025', '12/15/2025', 10);
-        expect(Booking.checkIn instanceof Date).toBe(true)
-    })
-    
-    it('El checkOut introducido tiene que ser un date', () =>{
-        const room = new Room('double', Booking, 100, 10);
-        const booking = new Booking('Omar', 'omarboulakchour@gmail.com', '12/12/2025', '12/15/2025', 10);
-        expect(Booking.checkOut instanceof Date).toBe(true)
-    })
+  it('El checkIn introducido tiene que ser un Date', () => {
+    expect(booking[0].checkIn instanceof Date).toBe(true);
+  });
 
-    it('El discount de Booking introducido tiene que ser un numero', () =>{
-        const room = new Room('double', Booking, 100, 10);
-        const booking = new Booking('Omar', 'omarboulakchour@gmail.com', '12/12/2025', '12/15/2025', 10);
-        expect(typeof Booking.discount).toBe('number')
-    })
+  it('El checkOut introducido tiene que ser un Date', () => {
+    expect(booking[0].checkOut instanceof Date).toBe(true);
+  });
 
-
-})
+  it('El discount de booking introducido tiene que ser un número', () => {
+    expect(typeof booking[0].discount).toBe('number');
+  });
+});
