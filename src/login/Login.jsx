@@ -13,7 +13,7 @@ export const Login = () => {
   const handleLogin = () => {
     if (email === "123" && password === "123") {
       dispatch({ type: "login", payload: { email } });
-      navigate("/Room");
+      navigate("/room");
     } else {
       alert("El usuario no existe");
     }
@@ -21,7 +21,7 @@ export const Login = () => {
 
   return (
     <Container>
-      <Headline>Login</Headline>
+      <Headline>Login Hotel</Headline>
       <Box>
         <p>Email</p>
         <GradientBackground>
@@ -29,7 +29,8 @@ export const Login = () => {
             type="text"
             placeholder="Enter your Email"
             value={email}
-            onChange={(e) => setEmail(e.target.value)} />
+            onChange={(e) => setEmail(e.target.value)} 
+            data-cy='email'/>
         </GradientBackground>
       </Box>
       <Box>
@@ -40,12 +41,13 @@ export const Login = () => {
             placeholder="Enter your Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            data-cy='password'
           />
         </GradientBackground>
       </Box>
-      <LoginButton onClick={handleLogin}>Login</LoginButton>
+      <LoginButton onClick={handleLogin} data-cy='sign-in'>Login</LoginButton>
       <Text>
-        Don't have an account?<a href="#"> Sign in</a>
+        Don't have an account?<a href="#">Sign in</a>
       </Text>
     </Container>
   );
