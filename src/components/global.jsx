@@ -1,4 +1,5 @@
 import { createGlobalStyle } from "styled-components";
+import styled from 'styled-components';
 
 const GlobalStyle = createGlobalStyle`
   * {
@@ -14,5 +15,17 @@ const GlobalStyle = createGlobalStyle`
       cursor: pointer
   }
 `;
+
+export const Container = styled.div`
+  display: flex;
+  width: 100%;
+`;
+
+export const MainContent = styled.div`
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+`;
+
 
 export default GlobalStyle;
