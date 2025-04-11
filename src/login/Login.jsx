@@ -3,7 +3,7 @@ import { Container, Headline, Box, Input, LoginButton, Text, GradientBackground 
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "./context/loginContext";  
 
-export const Login = () => {
+export const Login = ({ onLogin }) => {
   const navigate = useNavigate();
   const { dispatch } = useAuth();
   const [email, setEmail] = useState("");
@@ -12,6 +12,7 @@ export const Login = () => {
   const handleLogin = () => {
     if (email === "123" && password === "123") {
       dispatch({ type: "login", payload: { email } });
+      onLogin?.();
       navigate("/Room");
     } else {
       alert("El usuario no existe");
@@ -29,7 +30,8 @@ export const Login = () => {
             placeholder="Enter your Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)} 
-            data-cy='email'/>
+            data-cy='email'
+            data-testid="inputEmail"/>
         </GradientBackground>
       </Box>
       <Box>
@@ -41,10 +43,14 @@ export const Login = () => {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             data-cy='password'
+            data-testid="inputPassword"
           />
         </GradientBackground>
       </Box>
-      <LoginButton onClick={handleLogin} data-cy='sign-in'>Login</LoginButton>
+      <LoginButton 
+        onClick={handleLogin} 
+        data-cy='sign-in' 
+        data-testid="buttonLogin">Login</LoginButton>
       <Text>
         Don't have an account?<a href="#">Sig in</a>
       </Text>
