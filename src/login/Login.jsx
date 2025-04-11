@@ -1,4 +1,3 @@
-// Login.js
 import React, { useState } from "react";
 import { Container, Headline, Box, Input, LoginButton, Text, GradientBackground } from "./loginStyled";
 import { useNavigate } from "react-router-dom";
@@ -13,7 +12,7 @@ export const Login = () => {
   const handleLogin = () => {
     if (email === "123" && password === "123") {
       dispatch({ type: "login", payload: { email } });
-      navigate("/room");
+      navigate("/Room");
     } else {
       alert("El usuario no existe");
     }
@@ -47,7 +46,7 @@ export const Login = () => {
       </Box>
       <LoginButton onClick={handleLogin} data-cy='sign-in'>Login</LoginButton>
       <Text>
-        Don't have an account?<a href="#">Sign in</a>
+        Don't have an account?<a href="#">Sig in</a>
       </Text>
     </Container>
   );

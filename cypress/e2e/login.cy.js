@@ -1,34 +1,39 @@
-
-
 describe('template script', () => {
     it('successfylly loads', () => {
         cy.visit('http://localhost:5173/login')
     })
 
     it('Credenciales correctas', () => {
-        cy.get('input[data-cy="email"]').type('123');
-        cy.get('input[data-cy="password"]').type('123');
-        cy.contains('[data-cy="sig-in"]').click();
-        cy.url().should('include', '/room');
+        cy.visit('http://localhost:5173/login')
+        cy.get('[data-cy="email"]').type('123');
+        cy.get('[data-cy="password"]').type('123');
+        cy.get('[data-cy="sign-in"]').click();
+        cy.url().should('include', 'http://localhost:5173/Room');
     });
 });
 
 describe('las credenciales son incorrectas', () =>{
     it('email incorrecto', () => {
-        cy.get('input[data-cy="email"]').type('incorrecto');
-        cy.get('input[data-cy="password"]').type('123');
-        cy.contains('[data-cy="sig-in"]').click();
+        cy.visit('http://localhost:5173/login')
+        cy.get('[data-cy="email"]').type('incorrecto');
+        cy.get('[data-cy="password"]').type('123');
+        cy.get('[data-cy="sign-in"]').click();
+        cy.url().should('not.include', 'http://localhost:5173/Room');
     });
 
     it('contraseña incorrecta', () => {
-        cy.get('input[data-cy="email"]').type('123');
-        cy.get('input[data-cy="password"]').type('incorrecto');
-        cy.contains('[data-cy="sig-in"]').click();
+        cy.visit('http://localhost:5173/login')
+        cy.get('[data-cy="email"]').type('123');
+        cy.get('[data-cy="password"]').type('incorrecto');
+        cy.get('[data-cy="sign-in"]').click();
+        cy.url().should('not.include', 'http://localhost:5173/Room');
     });
 
     it('contraseña y email incorrectos', () => {
-        cy.get('input[data-cy="email"]').type('incorrecto');
-        cy.get('input[data-cy="password"]').type('incorrecto');
-        cy.contains('[data-cy="sig-in"]').click();
+        cy.visit('http://localhost:5173/login')
+        cy.get('[data-cy="email"]').type('incorrecto');
+        cy.get('[data-cy="password"]').type('incorrecto');
+        cy.get('[data-cy="sign-in"]').click();
+        cy.url().should('not.include', 'http://localhost:5173/Room');
     });
 })
