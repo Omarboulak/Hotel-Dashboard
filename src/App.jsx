@@ -13,6 +13,7 @@ import { HotelRoom } from './hotelRoom/HotelRoom';
 import { NewBooking } from './booking/components/NewBooking';
 import { EditBooking } from './booking/components/EditBooking';
 import { NewUsers } from './users/components/NewUsers';
+import { EditUser } from './users/components/EditUser';
 import { Login } from './login/Login';
 
 export const App = () => {
@@ -52,6 +53,7 @@ const AuthRoutes = () => {
               <Route path="/Contact/archive" element={<ContactArchive />} />
               <Route path="/Users" element={<Users />} />
               <Route path="/Users/NewUsers" element={<NewUsers />} />
+              <Route path="/Users/EditUser/:userId" element={<EditUser />} />
               <Route path="*" element={<Navigate to="/Room" />} />
             </>
           ) : (

@@ -17,8 +17,6 @@ const initialState: NewBookingState = {
   error: null,
 };
 
-
-
 const usersSlice = createSlice({
   name: 'users',
   initialState,
@@ -39,10 +37,10 @@ const usersSlice = createSlice({
       .addCase(addUsersFetch.rejected, state => {
         state.status = PromiseStatus.REJECTED;
       })
+
       .addCase(updateUsersFetch.pending, state => {
         state.status = PromiseStatus.PENDING;
       })
-      
       .addCase(updateUsersFetch.fulfilled, (state, action: PayloadAction<{ id: number, editRow: Partial<UsersInterface> }>) => {
         const { id, editRow } = action.payload;
         state.value = state.value.map((row) =>
