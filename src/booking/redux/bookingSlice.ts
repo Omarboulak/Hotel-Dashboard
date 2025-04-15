@@ -51,7 +51,7 @@ export const newBookingSlice = createSlice({
             .addCase(updateBookingFetch.fulfilled, (state, action: PayloadAction<{id: number, editRow: Partial<BookingInterface>}>) => {
                 const { id, editRow } = action.payload;
                 state.value = state.value.map((row) =>
-                    row.id === id ? { ...row, ...editRow } : row
+                    row.ID === id ? { ...row, ...editRow } : row
                 );
                 state.loading = false;
             })
@@ -65,7 +65,7 @@ export const newBookingSlice = createSlice({
             })
             .addCase(deleteBookingFetch.fulfilled, (state, action: PayloadAction<number>) => {
                 state.status = PromiseStatus.FULFILLED
-                state.value = state.value.filter(cell => cell.id !== action.payload)
+                state.value = state.value.filter(cell => cell.ID !== action.payload)
                 state.loading = false;
             })
             .addCase(deleteBookingFetch.rejected, state => {

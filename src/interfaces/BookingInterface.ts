@@ -1,7 +1,7 @@
 export interface BookingInterface {
-    id: number,
-    firstName: string,
-    lastName: string,
+    ID: number,
+    first_Name: string,
+    last_Name: string,
     orderDate: string,
     checkIn: string,
     checkOut: string,
