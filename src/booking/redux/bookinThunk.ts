@@ -9,7 +9,6 @@ export const addBookingFetch = createAsyncThunk<BookingInterface[], void>('booki
 export const updateBookingFetch = createAsyncThunk<{ id: number; editRow: Partial<BookingInterface> }, { id: number; bookingData: Partial<BookingInterface> } >(
   'booking/update',
   async ({ id, bookingData }) => {
-    // Aquí podrías hacer el fetch u otra operación asíncrona.
     return { id, editRow: bookingData };
   }
 );
