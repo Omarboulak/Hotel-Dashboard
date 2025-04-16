@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { FC } from "react";
 import Table from "../components/Table/Table";
 import { useNavigate } from 'react-router-dom';
 import { BookingUser, RoomId, ButtonModal, StatusBooking, MenuTable, Add } from "./bookingStyled";
@@ -6,18 +7,25 @@ import { Modal } from "./components/modal";
 import { Filter } from "../components/filter/Filter";
 import { useDispatch, useSelector } from "react-redux";
 import { addBookingFetch, deleteBookingFetch } from "./redux/bookinThunk";
+import { BookingInterface } from "../interfaces/BookingInterface";
 
-export const Bookings = () => {
+export const Bookings: FC = () => {
+    
+    interface RootState {
+        newBooking: BookingInterface[];
+    }
+    
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const [open, setopen] = useState(false);
-    const [activeFilter, setActiveFilter] = useState("All");
-    const bookings = useSelector((state) => state.newBooking.value);
+
+    const [open, setopen] = useState<boolean>(false);
+    const [activeFilter, setActiveFilter] = useState<string>("All");
+    const bookings = useSelector((state: RootState) => state.newBooking.value);
     const [filteredBooking, setFilteredBooking] = useState(bookings);
     const [selectRow, setSelectRow] = useState([]);
     const selectedBooking = bookings.find(item => item.ID === open);
     const addBooking = () => navigate('/Bookings/NewBooking');
-    const editBooking = (id) => navigate(`/Bookings/EditBooking/${id}`);
+    const editBooking = (id: number) => navigate(`/Bookings/EditBooking/${id}`);
 
     const menuOptions = [
         { value: "All", label: "All" },
@@ -46,7 +54,6 @@ export const Bookings = () => {
 
     const openPopup = (bookingId) => setopen(bookingId);
     const closePopup = () => setopen(false);
-
 
     const handleFilter = (status) => {
         if (status === 'All') {

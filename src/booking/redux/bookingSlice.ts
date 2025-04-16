@@ -8,7 +8,7 @@ export interface NewBookingState {
     value: BookingInterface[];
     status: PromiseStatus;
     error: string | null;
-    loading?: boolean;
+    loading: boolean;
 }
 
 const initialState: NewBookingState = {
