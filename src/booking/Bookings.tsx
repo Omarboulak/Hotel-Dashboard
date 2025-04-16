@@ -20,7 +20,9 @@ export const Bookings: FC = () => {
 
     const [open, setopen] = useState<boolean>(false);
     const [activeFilter, setActiveFilter] = useState<string>("All");
+
     const bookings = useSelector((state: RootState) => state.newBooking.value);
+    
     const [filteredBooking, setFilteredBooking] = useState(bookings);
     const [selectRow, setSelectRow] = useState([]);
     const selectedBooking = bookings.find(item => item.ID === open);

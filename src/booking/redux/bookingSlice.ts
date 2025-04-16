@@ -15,6 +15,7 @@ const initialState: NewBookingState = {
     value: [],
     status: PromiseStatus.IDLE,
     error: null,
+    loading: true
 };
 
 
@@ -30,7 +31,7 @@ export const newBookingSlice = createSlice({
 
     extraReducers: builder => {
         builder
-            .addCase(addBookingFetch.pending, state => {
+            .addCase(addBookingFetch.pending,(state: NewBookingState) => {
                 state.status = PromiseStatus.PENDING
                 state.error = null;
             })
