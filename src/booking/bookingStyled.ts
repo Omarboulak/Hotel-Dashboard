@@ -51,7 +51,11 @@ export const ModalContainer = styled.div`
     text-align: left;
 `
 
-export const StatusBooking = styled.p`
+interface StatusBookingProps {
+    status: string;
+}
+
+export const StatusBooking = styled.p<StatusBookingProps>`
   background-color: ${(props) => props.status === 'CheckIn' ? '#E8FFEE' : props.status === 'CheckOut' ? '#FFEDEC' : '#f8f9bb'};
   color: ${(props) => props.status === 'CheckIn' ? '#5AD07A' : props.status === 'CheckOut' ? '#E23428' : '#615b06'};
   padding: .5rem 1rem;

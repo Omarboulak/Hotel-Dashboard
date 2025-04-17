@@ -1,30 +1,29 @@
 import React, { useEffect, useState } from "react";
 import { FC } from "react";
-import Table from "../components/Table/Table";
+import Table, { Column } from "../components/Table/Table";
 import { useNavigate } from 'react-router-dom';
 import { BookingUser, RoomId, ButtonModal, StatusBooking, MenuTable, Add } from "./bookingStyled";
-import { Modal } from "./components/modal";
+import { Modal } from "./components/Modal";
 import { Filter } from "../components/filter/Filter";
 import { useDispatch, useSelector } from "react-redux";
 import { addBookingFetch, deleteBookingFetch } from "./redux/bookinThunk";
 import { BookingInterface } from "../interfaces/BookingInterface";
+import { useAppDispatch, useAppSelector } from "../Redux/hooks";
+import type { RootState } from "../Redux/store";
+
 
 export const Bookings: FC = () => {
     
-    interface RootState {
-        newBooking: BookingInterface[];
-    }
-    
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
     const navigate = useNavigate();
 
-    const [open, setopen] = useState<boolean>(false);
+    const [open, setopen] = useState<number | boolean>(false);
     const [activeFilter, setActiveFilter] = useState<string>("All");
 
-    const bookings = useSelector((state: RootState) => state.newBooking.value);
+    const bookings = useAppSelector((state: RootState) => state.newBooking.value);
     
     const [filteredBooking, setFilteredBooking] = useState(bookings);
-    const [selectRow, setSelectRow] = useState([]);
+    const [selectRow, setSelectRow] = useState<number[]>([]);
     const selectedBooking = bookings.find(item => item.ID === open);
     const addBooking = () => navigate('/Bookings/NewBooking');
     const editBooking = (id: number) => navigate(`/Bookings/EditBooking/${id}`);
@@ -36,8 +35,8 @@ export const Bookings: FC = () => {
         { value: "In Progress", label: "In Progress" },
     ];
 
-    const columns = [
-        { header: 'Select', accessor: 'select' },
+    const columns: Column<BookingInterface>[] = [
+        { header: 'Select', accessor: 'select' as keyof BookingInterface },
         { header: 'Guest', accessor: 'Guest' },
         { header: 'OrderDate', accessor: 'OrderDate' },
         { header: 'CheckIn', accessor: 'CheckIn' },
@@ -54,14 +53,14 @@ export const Bookings: FC = () => {
         setFilteredBooking(bookings);
     }, [dispatch, bookings]);
 
-    const openPopup = (bookingId) => setopen(bookingId);
+    const openPopup = (bookingId: number) => setopen(bookingId);
     const closePopup = () => setopen(false);
 
-    const handleFilter = (status) => {
+    const handleFilter = (status: string) => {
         if (status === 'All') {
             setFilteredBooking(bookings);
         } else {
-            const filtered = bookings.filter(cell => cell.Status === status);
+            const filtered = bookings.filter(cell => cell.status === status);
             setFilteredBooking(filtered)
         }
     }
@@ -90,13 +89,18 @@ export const Bookings: FC = () => {
         }
     }
 
-    const handleCheckbox = (e, id) => {
+    const handleCheckbox = (e: React.ChangeEvent<HTMLInputElement>, id: number) => {
         if (e.target.checked) {
             setSelectRow(prev => [...prev, id])
         } else {
             setSelectRow(prev => prev.filter(selectedId => selectedId !== id));
         }
     };
+
+    interface MyColumn {
+        header: string;
+        accessor: keyof BookingInterface | "select"; 
+      }
 
     return (
         <div>
@@ -106,33 +110,36 @@ export const Bookings: FC = () => {
                     selected={activeFilter}
                     onSelect={handleFilter} />
                 <Add onClick={addBooking}>+ Add new</Add>
-                <Add onClick={(newUpdate) => handleUpdate(bookings.ID, newUpdate)}>Edit</Add>
+                <Add onClick={handleUpdate}>Edit</Add>
                 <Add onClick={handleDelete}>Delete</Add>
             </MenuTable>
 
             <Table
                 columns={columns}
                 data={filteredBooking}
-                renderCell={(col, row) => {
+                renderCell={(
+                    col:  Column<BookingInterface>,
+                    row: BookingInterface
+                  ) => {
                     if (col.accessor === 'Guest') {
                         return (
                             <BookingUser>
-                                <span>{row['First_Name']}</span>
-                                <span>{row['Last_Name']}</span>
+                                <span>{row['first_Name']}</span>
+                                <span>{row['last_Name']}</span>
                                 <RoomId>{row['ID']}</RoomId>
                             </BookingUser>
                         );
                     }
-                    if (col.accessor === 'SpecialRequest') {
+                    if (col.accessor === 'specialRequest') {
                         return (
                             <ButtonModal onClick={() => openPopup(row.ID)}>View Notes</ButtonModal>
                         )
                     }
-                    if (col.accessor === 'Status') {
+                    if (col.accessor === 'status') {
                         return <StatusBooking status={row[col.accessor]}>{row[col.accessor]}</StatusBooking>;
                     }
-                    if (col.accessor === 'RoomType') {
-                        return <p>{row['RoomType']} - {row['RoomNumber']}</p>;
+                    if (col.accessor === 'roomType') {
+                        return <p>{row['roomType']} - {row['roomNumber']}</p>;
                     }
                     if (col.accessor === 'select') {
                         return <input
@@ -146,7 +153,7 @@ export const Bookings: FC = () => {
             {selectedBooking && (
                 <Modal
                     closeModal={closePopup}
-                    request={selectedBooking['SpecialRequest']}
+                    request={selectedBooking['specialRequest']}
                 />
             )}
         </div>

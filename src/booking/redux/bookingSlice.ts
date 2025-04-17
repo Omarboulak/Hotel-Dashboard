@@ -24,7 +24,7 @@ export const newBookingSlice = createSlice({
     initialState,
 
     reducers:{
-        addBooking: (state, action: PayloadAction<BookingInterface>) => {
+        addBooking: (state: NewBookingState, action: PayloadAction<BookingInterface>) => {
             state.value.push(action.payload);
         }
     },
@@ -35,7 +35,7 @@ export const newBookingSlice = createSlice({
                 state.status = PromiseStatus.PENDING
                 state.error = null;
             })
-            .addCase(addBookingFetch.fulfilled, (state, action: PayloadAction<BookingInterface[]>) => {
+            .addCase(addBookingFetch.fulfilled, (state: NewBookingState, action: PayloadAction<BookingInterface[]>) => {
                 state.status = PromiseStatus.FULFILLED
                 state.value = action.payload
                 state.loading = false;
@@ -49,7 +49,7 @@ export const newBookingSlice = createSlice({
                 state.status = PromiseStatus.PENDING
                 state.error = null;
             })
-            .addCase(updateBookingFetch.fulfilled, (state, action: PayloadAction<{id: number, editRow: Partial<BookingInterface>}>) => {
+            .addCase(updateBookingFetch.fulfilled, (state: NewBookingState, action: PayloadAction<{id: number, editRow: Partial<BookingInterface>}>) => {
                 const { id, editRow } = action.payload;
                 state.value = state.value.map((row) =>
                     row.ID === id ? { ...row, ...editRow } : row
@@ -64,7 +64,7 @@ export const newBookingSlice = createSlice({
                 state.status = PromiseStatus.PENDING
                 state.error = null;
             })
-            .addCase(deleteBookingFetch.fulfilled, (state, action: PayloadAction<number>) => {
+            .addCase(deleteBookingFetch.fulfilled, (state: NewBookingState, action: PayloadAction<number>) => {
                 state.status = PromiseStatus.FULFILLED
                 state.value = state.value.filter(cell => cell.ID !== action.payload)
                 state.loading = false;

@@ -1,7 +1,13 @@
 import React from "react";
+import { FC } from "react";
 import { Dialog, ModalContainer } from "../bookingStyled";
 
-export const Modal = ({ closeModal, request }) => {
+interface ModalProp{
+    closeModal: () => void,
+    request: string
+}
+
+export const Modal: FC<ModalProp> = ({ closeModal, request }) => {
     return (
         <ModalContainer>
             <Dialog open>
