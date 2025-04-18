@@ -1,11 +1,9 @@
-import React, { useEffect, useState } from "react";
-import { FC } from "react";
+import React, { useEffect, useState, FC } from "react";
 import Table, { Column } from "../components/Table/Table";
 import { useNavigate } from 'react-router-dom';
 import { BookingUser, RoomId, ButtonModal, StatusBooking, MenuTable, Add } from "./bookingStyled";
 import { Modal } from "./components/Modal";
 import { Filter } from "../components/filter/Filter";
-import { useDispatch, useSelector } from "react-redux";
 import { addBookingFetch, deleteBookingFetch } from "./redux/bookinThunk";
 import { BookingInterface } from "../interfaces/BookingInterface";
 import { useAppDispatch, useAppSelector } from "../Redux/hooks";
@@ -36,14 +34,14 @@ export const Bookings: FC = () => {
     ];
 
     const columns: Column<BookingInterface>[] = [
-        { header: 'Select', accessor: 'select' as keyof BookingInterface },
-        { header: 'Guest', accessor: 'Guest' },
-        { header: 'OrderDate', accessor: 'OrderDate' },
-        { header: 'CheckIn', accessor: 'CheckIn' },
-        { header: 'CheckOut', accessor: 'CheckOut' },
-        { header: 'SpecialRequest', accessor: 'SpecialRequest' },
-        { header: 'RoomType', accessor: 'RoomType' },
-        { header: 'Status', accessor: 'Status' },
+        { header: 'Select', accessor: 'select' },
+        { header: 'Guest', accessor: 'first_Name' },
+        { header: 'OrderDate', accessor: 'orderDate' },
+        { header: 'CheckIn', accessor: 'checkIn' },
+        { header: 'CheckOut', accessor: 'checkOut' },
+        { header: 'SpecialRequest', accessor: 'specialRequest' },
+        { header: 'RoomType', accessor: 'roomType' },
+        { header: 'Status', accessor: 'status' },
     ];
 
     useEffect(() => {
@@ -97,17 +95,12 @@ export const Bookings: FC = () => {
         }
     };
 
-    interface MyColumn {
-        header: string;
-        accessor: keyof BookingInterface | "select"; 
-      }
-
     return (
         <div>
             <MenuTable>
                 <Filter
                     options={menuOptions}
-                    selected={activeFilter}
+                    selected={activeFilter} 
                     onSelect={handleFilter} />
                 <Add onClick={addBooking}>+ Add new</Add>
                 <Add onClick={handleUpdate}>Edit</Add>
@@ -121,7 +114,7 @@ export const Bookings: FC = () => {
                     col:  Column<BookingInterface>,
                     row: BookingInterface
                   ) => {
-                    if (col.accessor === 'Guest') {
+                    if (col.accessor === 'first_Name') {
                         return (
                             <BookingUser>
                                 <span>{row['first_Name']}</span>
@@ -147,7 +140,7 @@ export const Bookings: FC = () => {
                             checked={selectRow.includes(row.ID)}
                             onChange={(e) => handleCheckbox(e, row.ID)} />
                     }
-                    return row[col.accessor];
+                    return row[col.accessor] as React.ReactNode;
                 }}
             />
             {selectedBooking && (

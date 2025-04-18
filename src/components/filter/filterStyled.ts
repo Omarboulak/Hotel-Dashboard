@@ -6,7 +6,11 @@ export const Menu = styled.div`
     margin: 4rem 0 0 2rem;   
 `
 
-export const MenuButton = styled.button`
+interface MenuButtonInterface{
+    active: boolean;
+}
+
+export const MenuButton = styled.button<MenuButtonInterface>`
     border: 0;
     background-color: transparent;
     font: normal normal medium 16pxPoppins;
