@@ -41,8 +41,8 @@ export const EditBooking = () => {
           First Name:
           <Input 
             type="text" 
-            name="First_Name" 
-            value={formData.First_Name}
+            name="first_Name" 
+            value={formData.first_Name}
             onChange={handleChange} 
           />
         </Label>
@@ -50,8 +50,8 @@ export const EditBooking = () => {
           Last Name:
           <Input 
             type="text" 
-            name="Last_Name" 
-            value={formData.Last_Name} 
+            name="last_Name" 
+            value={formData.last_Name} 
             onChange={handleChange} 
           />
         </Label>
@@ -68,8 +68,8 @@ export const EditBooking = () => {
           Order Date:
           <Input 
             type="date" 
-            name="OrderDate" 
-            value={formData.OrderDate}
+            name="orderDate" 
+            value={formData.orderDate}
             onChange={handleChange} 
           />
         </Label>
@@ -77,8 +77,8 @@ export const EditBooking = () => {
           Check In:
           <Input 
             type="date" 
-            name="CheckIn" 
-            value={formData.CheckIn}
+            name="checkIn" 
+            value={formData.checkIn}
             onChange={handleChange} 
           />
         </Label>
@@ -86,16 +86,16 @@ export const EditBooking = () => {
           Check Out:
           <Input 
             type="date" 
-            name="CheckOut" 
-            value={formData.CheckOu} 
+            name="checkOut" 
+            value={formData.checkOut} 
             onChange={handleChange} 
           />
         </Label>
         <Label>
           Special Request:
           <Textarea 
-            name="SpecialRequest" 
-            value={formData.SpecialRequest}
+            name="specialRequest" 
+            value={formData.specialRequest}
             onChange={handleChange} 
           />
         </Label>
@@ -103,8 +103,8 @@ export const EditBooking = () => {
           Room Type:
           <Input 
             type="text" 
-            name="RoomType" 
-            value={formData.RoomType} 
+            name="roomType" 
+            value={formData.roomType} 
             onChange={handleChange} 
           />
         </Label>
@@ -112,17 +112,17 @@ export const EditBooking = () => {
           Room Number:
           <Input 
             type="number" 
-            name="RoomNumber" 
-            value={formData.RoomNumber}
+            name="roomNumber" 
+            value={formData.roomNumber}
             onChange={handleChange} 
           />
         </Label>
         <Label>
-          Status:
+          status:
           <Input 
             type="text" 
-            name="Status" 
-            value={formData.Status} 
+            name="status" 
+            value={formData.status} 
             onChange={handleChange} 
           />
         </Label>

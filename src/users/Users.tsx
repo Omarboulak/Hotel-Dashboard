@@ -1,40 +1,39 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, FC, CSSProperties, ChangeEvent } from "react";
 import { useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from "react-redux";
-import { Info, Image, Details } from "../room/roomStyled";
-import { FullName, ID, UserJoin, Status, Contact } from "./usersStyled";
-import { MenuTable, Add } from "../booking/bookingStyled";
-import phone from '../assets/phone.svg';
-import Table from "../components/Table/Table";
-import { Filter } from "../components/filter/Filter";
+import { useAppDispatch, useAppSelector } from "../Redux/hooks";
+import Table, { Column } from "../components/Table/Table";
+import { Filter, FilterOption } from "../components/filter/Filter";
 import { addUsersFetch, deleteUsersFetch } from "./redux/usersThunk";
+import type { RootState } from "../Redux/store";
+// import phone from '../assets/phone.svg';
+import { Info, Image, Details } from "../room/roomStyled";
+import { FullName, ID, UserJoin, Status, Contact } from './usersStyled';
+import { MenuTable, Add } from "../booking/bookingStyled";
+import { UsersInterface } from "../interfaces/UsersInterface";
 
-export const Users = () => {
-  const dispatch = useDispatch();
+export const Users: FC = () => {
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const users = useSelector((state) => state.users.value);
-  const [filteredUsers, setFilteredUsers] = useState(users);
-  const [activeFilter, setActiveFilter] = useState("All");
-  const [selectRow, setSelectRow] = useState([]);
 
-  const addUser = () => {
-    navigate('/Users/NewUsers');
-  };
+  const users = useAppSelector((state: RootState) => state.users.value as UsersInterface[]);
 
-  const editUser = (id) => {
-    navigate(`/Users/EditUser/${id}`);
-  };
+  const [filteredUsers, setFilteredUsers] = useState<UsersInterface[]>(users);
+  const [activeFilter, setActiveFilter] = useState<string>("All");
+  const [selectRow, setSelectRow] = useState<number[]>([]);
 
-  const columns = [
+  const addUser = () => navigate('/Users/NewUsers');
+  const editUser = (id: number) => navigate(`/Users/EditUser/${id}`);
+
+  const columns: Column<UsersInterface>[] = [
     { header: 'Select', accessor: 'select' },
-    { header: 'Name', accessor: 'Name' },
+    { header: 'Name', accessor: 'FullName' },
     { header: 'Email', accessor: 'Email' },
     { header: 'Job Desk', accessor: 'JobDescription' },
     { header: 'Contact', accessor: 'Contact' },
     { header: 'Status', accessor: 'Status' },
   ];
 
-  const menuOptions = [
+  const menuOptions: FilterOption[] = [
     { value: "All", label: "All" },
     { value: "ACTIVE", label: "ACTIVE" },
     { value: "INACTIVE", label: "INACTIVE" },
@@ -47,12 +46,12 @@ export const Users = () => {
     setFilteredUsers(users);
   }, [dispatch, users]);
 
-  const handleFilter = (status) => {
+  const handleFilter = (status: string) => {
+    setActiveFilter(status);
     if (status === 'All') {
       setFilteredUsers(users);
     } else {
-      const filtered = users.filter((cell) => cell.Status === status);
-      setFilteredUsers(filtered);
+      setFilteredUsers(users.filter(user => user.Status === status));
     }
   };
 
@@ -71,15 +70,15 @@ export const Users = () => {
     if (selectRow.length === 0) {
       alert("No se ha seleccionado ninguna fila");
       return;
-    } else if (selectRow.length > 1) {
+    }
+    if (selectRow.length > 1) {
       alert("No se puede seleccionar más de una fila");
       return;
-    } else {
-      editUser(selectRow[0]);
     }
+    editUser(selectRow[0]);
   };
 
-  const handleCheckbox = (e, id) => {
+  const handleCheckbox = (e: ChangeEvent<HTMLInputElement>, id: number) => {
     if (e.target.checked) {
       setSelectRow(prev => [...prev, id]);
     } else {
@@ -99,30 +98,35 @@ export const Users = () => {
         <Add onClick={handleUpdate}>Edit</Add>
         <Add onClick={handleDelete}>Delete</Add>
       </MenuTable>
+
       <Table
         columns={columns}
         data={filteredUsers}
         renderCell={(col, row) => {
-          if (col.accessor === 'Name') {
+          if (col.accessor === 'FullName') {
             return (
               <Info>
-                <Image src={row['Photo']} alt="User" />
+                <Image src={row.Photo} alt="User" />
                 <Details>
-                  <FullName>{row['FullName']}</FullName>
-                  <ID>{row['ID']}</ID>
-                  <UserJoin>{row['StartDate']}</UserJoin>
+                  <FullName>{row.FullName}</FullName>
+                  <ID>{row.ID}</ID>
+                  <UserJoin>{row.StartDate}</UserJoin>
                 </Details>
               </Info>
             );
           }
           if (col.accessor === 'Status') {
-            return <Status status={row[col.accessor]}>{row[col.accessor]}</Status>;
+            return (
+              <Status status={row.Status}>
+                {row.Status}
+              </Status>
+            );
           }
           if (col.accessor === 'Contact') {
             return (
               <Contact>
-                <img src={phone} alt="icono de un teléfono" />
-                <span>{row['Contact']}</span>
+                {/* <img src={phone} alt="icono de un teléfono" /> */}
+                <span>{row.Contact}</span>
               </Contact>
             );
           }
@@ -131,11 +135,11 @@ export const Users = () => {
               <input
                 type="checkbox"
                 checked={selectRow.includes(row.ID)}
-                onChange={(e) => handleCheckbox(e, row.ID)}
+                onChange={e => handleCheckbox(e, row.ID)}
               />
             );
           }
-          return row[col.accessor];
+          return (row[col.accessor] as React.ReactNode);
         }}
       />
     </div>

@@ -16,7 +16,11 @@ export const UserJoin = styled.p`
     font-size: 14px;
 `
 
-export const Status = styled.p`
+interface StatusProps {
+    status: string;
+}
+
+export const Status = styled.p<StatusProps>`
     color: ${(props) => props.status === 'ACTIVE' ? '#5AD07A' : '#E23428'};
     font-size: 14px;
 `
