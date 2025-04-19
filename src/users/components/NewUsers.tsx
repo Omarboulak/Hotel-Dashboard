@@ -1,34 +1,34 @@
-import React, { useState } from 'react';
+import React, { useState, ChangeEvent, FormEvent } from 'react';
 import { useDispatch } from "react-redux";
 import { useNavigate } from 'react-router-dom';
 import { FormContainer, FormTitle, Form, Label, Input, SubmitButton } from '../../components/styledFrom';
 import { addUser } from '../redux/userSlice';
+import { UsersInterface } from '../../interfaces/UsersInterface';
 
-export const NewUsers = () => {
+export const NewUsers: React.FC = () => {
   const navigate = useNavigate();  
   const dispatch = useDispatch();
-  
 
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<UsersInterface>({
     Photo: 'https://robohash.org/undevoluptatembeatae.png?size=50x50&set=set1', 
     FullName: '',
-    ID: '',
+    ID: 0,
     Email: '',
     StartDate: '',
     JobDescription: '',
-    Contact: '',
+    Contact: 0,
     Status: '',
   });
-  
-  const handleChange = (e) => {
+
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
   
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const newUserData = { 
-      ...formData, 
-      ID: Number(formData.ID) 
+    const newUserData = {
+      ...formData,
+      ID: Number(formData.ID)
     };
     dispatch(addUser(newUserData));
     navigate('/Users');

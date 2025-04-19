@@ -1,38 +1,56 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, ChangeEvent, FormEvent } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import {FormContainer, FormTitle, Form, Label, Input, SubmitButton, Textarea} from '../../components/styledFrom'
+import { FormContainer, FormTitle, Form, Label, Input, SubmitButton } from '../../components/styledFrom';
 import { useDispatch, useSelector } from "react-redux";
 import { updateUsersFetch } from '../redux/usersThunk';
+import { UsersInterface } from '../../interfaces/UsersInterface';
+import { RootState } from '../../Redux/store';
+import { useAppDispatch, useAppSelector } from '../../Redux/hooks';
 
-export const EditUser = () => {
+export const EditUser: React.FC = () => {
   const navigate = useNavigate();  
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const { userId } = useParams();
-  const [formData, setFormData] = useState({});
   
-  const users = useSelector(state =>
-    state.users.value.find(b => b.ID === Number(userId))
+  const user = useAppSelector((state: RootState) =>
+    state.users.value.find(u => u.ID === Number(userId))
   );
 
+  const [formData, setFormData] = useState<UsersInterface>({
+    Photo: '',
+    FullName: '',
+    ID: 0,
+    Email: '',
+    StartDate: '',
+    JobDescription: '',
+    Contact: 0,
+    Status: '',
+  });
+
   useEffect(() => {
-    if (users) {
-      setFormData(users);
+    if (user) {
+      setFormData(user);
     }
-  }, [users]);
-  
-  const handleChange = (e) => {
-    setFormData({...formData, [e.target.name]: e.target.value});
+  }, [user]);
+
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    if (formData) {
+      setFormData({ ...formData, [e.target.name]: e.target.value });
+    }
   };
-  
-  const handleSubmit = (e) => {
+
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const updatedData = { ...formData, ID: Number(formData.ID) };
+    if (!formData) return;
+
+    const updatedData: UsersInterface = {
+      ...formData,
+      ID: Number(formData.ID),
+    };
+
     dispatch(updateUsersFetch({ id: Number(userId), userData: updatedData }));
     navigate('/Users');
   };
-
-
-  
   return (
    <FormContainer>
         <FormTitle>Add New User</FormTitle>
