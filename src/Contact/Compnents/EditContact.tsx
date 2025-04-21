@@ -1,0 +1,136 @@
+import React, { useEffect, useState, ChangeEvent, FormEvent } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { FormContainer, FormTitle, Form, Label, Input, SubmitButton } from '../../components/styledFrom';
+import { useAppDispatch, useAppSelector } from '../../Redux/hooks';
+import { updateContactFetch } from '../redux/contactThunk';
+import { ContactInterface } from '../../interfaces/ContactInterface';
+import { RootState } from '../../Redux/store';
+
+export const EditContact: React.FC = () => {
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  const { id } = useParams<{ id: string }>();
+  const contactId = Number(id);
+
+  const contact = useAppSelector((state: RootState) =>
+    state.contacts.value.find(c => c.ID === contactId)
+  );
+
+  const [formData, setFormData] = useState<ContactInterface>({
+    ID: 0,
+    Date: '',
+    first_name: '',
+    last_name: '',
+    email: '',
+    phone: '',
+    Subject: '',
+    Comment: '',
+    ARCHIVE: false,
+  });
+
+  useEffect(() => {
+    if (contact) {
+      setFormData(contact);
+    }
+  }, [contact]);
+
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    dispatch(updateContactFetch({ id: formData.ID, contactData: formData }));
+    navigate('/Contact');
+  };
+
+  return (
+    <FormContainer>
+      <FormTitle>Edit Contact</FormTitle>
+      <Form onSubmit={handleSubmit}>
+        <Label>
+          Date:
+          <Input
+            type="date"
+            name="Date"
+            value={formData.Date}
+            onChange={handleChange}
+          />
+        </Label>
+
+        <Label>
+          First Name:
+          <Input
+            type="text"
+            name="first_name"
+            value={formData.first_name}
+            onChange={handleChange}
+          />
+        </Label>
+
+        <Label>
+          Last Name:
+          <Input
+            type="text"
+            name="last_name"
+            value={formData.last_name}
+            onChange={handleChange}
+          />
+        </Label>
+
+        <Label>
+          Email:
+          <Input
+            type="email"
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
+          />
+        </Label>
+
+        <Label>
+          Phone:
+          <Input
+            type="text"
+            name="phone"
+            value={formData.phone}
+            onChange={handleChange}
+          />
+        </Label>
+
+        <Label>
+          Subject:
+          <Input
+            type="text"
+            name="Subject"
+            value={formData.Subject}
+            onChange={handleChange}
+          />
+        </Label>
+
+        <Label>
+          Comment:
+          <Input
+            name="Comment"
+            value={formData.Comment}
+            onChange={handleChange}
+          />
+        </Label>
+
+        <Label>
+          Archive:
+          <Input
+            type="checkbox"
+            name="ARCHIVE"
+            checked={formData.ARCHIVE}
+            onChange={handleChange}
+          />
+        </Label>
+
+        <SubmitButton type="submit">Save Contact</SubmitButton>
+      </Form>
+    </FormContainer>
+  );
+};
+
+export default EditContact;

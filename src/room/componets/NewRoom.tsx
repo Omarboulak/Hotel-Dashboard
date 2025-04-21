@@ -2,16 +2,8 @@ import React, { ChangeEvent, useState, FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAppDispatch } from '../../Redux/hooks';
 import { RoomInterface } from '../../interfaces/RoomInterface';
-import { addRoomFetch } from '../redux/roomThunk';
-import {
-  FormContainer,
-  FormTitle,
-  Form,
-  Label,
-  Input,
-  SubmitButton,
-  Textarea
-} from '../../components/styledFrom';
+import { addRoom } from '../redux/roomSlice';
+import { FormContainer, FormTitle, Form, Label, Input, SubmitButton, Textarea } from '../../components/styledFrom';
 
 export const NewRoom = () => {
   const dispatch = useAppDispatch();
@@ -36,10 +28,13 @@ export const NewRoom = () => {
   
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    dispatch(addRoomFetch(formData));
-    navigate('/Rooms');
+    const newRoomData = {
+      ...formData,
+      ID: Number(formData.room_id)
+    };
+    dispatch(addRoom(newRoomData));
+    navigate('/Users');
   };
-  
 
   return (
     <FormContainer>
@@ -57,7 +52,7 @@ export const NewRoom = () => {
 
         <Label>
           Description:
-          <Textarea
+          <Input
             name="description"
             value={formData.description}
             onChange={handleChange}
@@ -90,15 +85,6 @@ export const NewRoom = () => {
             type="text"
             name="amenities"
             value={formData.amenities}
-            onChange={handleChange}
-          />
-        </Label>
-
-        <Label>
-          Cancellation Policy:
-          <Textarea
-            name="cancellation_policy"
-            value={formData.cancellation_policy}
             onChange={handleChange}
           />
         </Label>
