@@ -5,13 +5,16 @@ import Menu from './components/Menu';
 import { Header } from './components/header/Header';
 import GlobalStyle from './components/global';
 import { Room } from './Room/Room';
-import Contact from './Contact/Contact';
-import { ContactArchive } from './Contact/Compnents/ContactArchive';
+import { NewRoom } from './Room/componets/NewRoom';
+import { EditRoom } from './Room/componets/EditRoom';
+import {Contact} from './Contact/Contact'
+import {NewContact} from './Contact/Compnents/NewContact';
+import {EditContact} from './Contact/Compnents/EditContact';
 import { Bookings } from './booking/Bookings';
-import { Users } from './users/Users';
-import { HotelRoom } from './hotelRoom/HotelRoom';
 import { NewBooking } from './booking/components/NewBooking';
 import { EditBooking } from './booking/components/EditBooking';
+import { Users } from './users/Users';
+import { HotelRoom } from './hotelRoom/HotelRoom';
 import { NewUsers } from './users/components/NewUsers';
 import { EditUser } from './users/components/EditUser';
 import { Login } from './login/Login';
@@ -45,12 +48,15 @@ const AuthRoutes = () => {
           {state.isLoggedIn ? (
             <>
               <Route path="/Room" element={<Room />} />
+              <Route path="/Room/NewRoom" element={<NewRoom />} />
+              <Route path="/Room/NewRoom/:roomId" element={<EditRoom />} />
               <Route path="/HotelRoom" element={<HotelRoom />} />
               <Route path="/Bookings" element={<Bookings />} />
               <Route path="/Bookings/NewBooking" element={<NewBooking />} />
               <Route path="/Bookings/EditBooking/:bookingId" element={<EditBooking />} />
               <Route path="/Contact" element={<Contact />} />
-              <Route path="/Contact/archive" element={<ContactArchive />} />
+              <Route path="/Contact/NewContact" element={<NewContact />} />
+              <Route path="/Contact/NewContact/:contactId" element={<EditContact />} />
               <Route path="/Users" element={<Users />} />
               <Route path="/Users/NewUsers" element={<NewUsers />} />
               <Route path="/Users/EditUser/:userId" element={<EditUser />} />

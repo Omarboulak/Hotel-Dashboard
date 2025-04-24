@@ -124,4 +124,3 @@ export const NewContact: React.FC = () => {
   );
 };
 
-export default NewContact;

@@ -6,6 +6,12 @@ export const FullName = styled.p`
     font-weigth: medium;
 `
 
+export const ContactJoin = styled.p`
+    color: #212121;
+    font-family: Poppins;
+    font-weigth: medium;
+`
+
 export const ID = styled.p`
     color: #393939;
     margin: .5rem 0;

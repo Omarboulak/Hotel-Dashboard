@@ -1,76 +1,101 @@
-import React, { useEffect, useState, ChangeEvent, FC } from "react";
-import { useLocation } from 'react-router-dom';
-import { useAppDispatch } from "../Redux/hooks";
+import React, { useEffect, useState, FC, ChangeEvent } from "react";
+import { useNavigate } from 'react-router-dom';
+import { useAppDispatch, useAppSelector } from "../Redux/hooks";
 import Table, { Column } from "../components/Table/Table";
 import { Filter, FilterOption } from "../components/filter/Filter";
+import { addContactFetch, deleteContactFetch } from "./redux/contactThunk";
+import type { RootState } from "../Redux/store";
+import { Info, Image, Details } from "../room/roomStyled";
+import { FullName, ID, ContactJoin, Status, Contact } from '../users/usersStyled';
 import { MenuTable, Add } from "../booking/bookingStyled";
 import { ContactInterface } from "../interfaces/ContactInterface";
 
-export const Contact: FC = () => {
+export const Contacts: FC = () => {
   const dispatch = useAppDispatch();
-  const location = useLocation();
+  const navigate = useNavigate();
 
-  const [contacts, setContacts] = useState<ContactInterface[]>([]);
-  const [filteredContacts, setFilteredContacts] = useState<ContactInterface[]>([]);
-  const [activeFilter, setActiveFilter] = useState<string>('All');
+  const contacts = useAppSelector((state: RootState) => state.contacts.value as ContactInterface[]);
+
+  const [filteredContacts, setFilteredContacts] = useState<ContactInterface[]>(contacts);
+  const [activeFilter, setActiveFilter] = useState<string>("All");
   const [selectRow, setSelectRow] = useState<number[]>([]);
 
+  const addContact = () => navigate('/Contact/NewContact');
+  const editContact = (id: number) => navigate(`/Contact/EditContact/${id}`);
+
   const columns: Column<ContactInterface>[] = [
-    { header: 'ID', accessor: 'ID' },
-    { header: 'Date', accessor: 'Date' },
+    { header: 'Select', accessor: 'select' },
+    { header: 'Name', accessor: 'first_name' },
+    { header: 'Email', accessor: 'email' },
     { header: 'Subject', accessor: 'Subject' },
     { header: 'Comment', accessor: 'Comment' },
-    { header: 'Customer', accessor: 'first_name' },
-    { header: 'ARCHIVE', accessor: 'ARCHIVE' },
+    { header: 'Status', accessor: 'ARCHIVE' },
   ];
 
   const menuOptions: FilterOption[] = [
-    { value: 'All', label: 'All' },
-    { value: 'true', label: 'Archived' },
-    { value: 'false', label: 'Not Archived' },
+    { value: "All", label: "All" },
+    { value: "true", label: "Archived" },
+    { value: "false", label: "Not Archived" },
   ];
 
   useEffect(() => {
-    fetch('../../Contact.json')
-      .then(res => res.json())
-      .then(data => {
-        setContacts(data);
-        setFilteredContacts(data);
-      })
-      .catch(err => console.error("Error loading contacts:", err));
-  }, []);
+    if (contacts.length === 0) {
+      dispatch(addContactFetch());
+    }
+    setFilteredContacts(contacts);
+  }, [dispatch, contacts]);
 
-  const handleFilter = (value: string) => {
-    setActiveFilter(value);
-    if (value === 'All') {
+  const handleFilter = (status: string) => {
+    setActiveFilter(status);
+    if (status === 'All') {
       setFilteredContacts(contacts);
     } else {
-      setFilteredContacts(contacts.filter(contact => String(contact.ARCHIVE) === value));
+      setFilteredContacts(contacts.filter(c => String(c.ARCHIVE) === status));
     }
   };
 
-  const handleArchive = (id: number) => {
-    const updated = contacts.map(contact =>
-      contact.ID === id ? { ...contact, ARCHIVE: true } : contact
-    );
-    setContacts(updated);
-    handleFilter(activeFilter);
+  const handleDelete = () => {
+    if (selectRow.length === 0) {
+      alert("No se ha seleccionado ninguna fila");
+      return;
+    }
+    selectRow.forEach(id => {
+      dispatch(deleteContactFetch(id));
+    });
+    setSelectRow([]);
+  };
+
+  const handleUpdate = () => {
+    if (selectRow.length === 0) {
+      alert("No se ha seleccionado ninguna fila");
+      return;
+    }
+    if (selectRow.length > 1) {
+      alert("No se puede seleccionar más de una fila");
+      return;
+    }
+    editContact(selectRow[0]);
   };
 
   const handleCheckbox = (e: ChangeEvent<HTMLInputElement>, id: number) => {
     if (e.target.checked) {
       setSelectRow(prev => [...prev, id]);
     } else {
-      setSelectRow(prev => prev.filter(i => i !== id));
+      setSelectRow(prev => prev.filter(selectedId => selectedId !== id));
     }
   };
 
   return (
     <div>
       <MenuTable>
-        <Filter options={menuOptions} selected={activeFilter} onSelect={handleFilter} />
-        <Add onClick={() => alert("Add Contact (not implemented)")}>+ Add Contact</Add>
-        <Add onClick={() => selectRow.forEach(id => handleArchive(id))}>Archive</Add>
+        <Filter
+          options={menuOptions}
+          selected={activeFilter}
+          onSelect={handleFilter}
+        />
+        <Add onClick={addContact}>+ Add new</Add>
+        <Add onClick={handleUpdate}>Edit</Add>
+        <Add onClick={handleDelete}>Delete</Add>
       </MenuTable>
 
       <Table
@@ -79,18 +104,21 @@ export const Contact: FC = () => {
         renderCell={(col, row) => {
           if (col.accessor === 'first_name') {
             return (
-              <div>
-                <span>{row.first_name} {row.last_name}</span>
-                <p>{row.email}</p>
-                <p>{row.phone}</p>
-              </div>
+              <Info>
+                <Image src={row.email} alt="Contact" />
+                <Details>
+                  <FullName>{row.first_name} {row.last_name}</FullName>
+                  <ID>{row.ID}</ID>
+                  <ContactJoin>{row.Date}</ContactJoin>
+                </Details>
+              </Info>
             );
           }
           if (col.accessor === 'ARCHIVE') {
-            return !row.ARCHIVE ? (
-              <button onClick={() => handleArchive(row.ID)}>Archive</button>
-            ) : (
-              <span>Archived</span>
+            return (
+              <Status status={row.ARCHIVE.toString()}>
+                {row.ARCHIVE ? 'Archived' : 'Active'}
+              </Status>
             );
           }
           if (col.accessor === 'select') {
@@ -102,7 +130,7 @@ export const Contact: FC = () => {
               />
             );
           }
-          return String(row[col.accessor]);
+          return (row[col.accessor] as React.ReactNode);
         }}
       />
     </div>
