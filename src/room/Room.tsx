@@ -83,7 +83,11 @@ export const Room: FC = () => {
   return (
     <div>
       <MenuTable>
-        <Filter options={menuOptions} selected={activeFilter} onSelect={handleFilter} />
+        <Filter 
+          options={menuOptions} 
+          selected={activeFilter} 
+          onSelect={handleFilter} />
+          
         <Add onClick={addRoom}>+ Add Room</Add>
         <Add onClick={handleUpdate}>Edit</Add>
         <Add onClick={handleDelete}>Delete</Add>

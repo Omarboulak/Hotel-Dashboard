@@ -35,7 +35,6 @@ const contactSlice = createSlice({
       })
       .addCase(addContactFetch.rejected, state => {
         state.status = PromiseStatus.REJECTED;
-        state.error = 'Failed to load contacts.';
       })
 
       .addCase(updateContactFetch.pending, state => {
@@ -53,7 +52,6 @@ const contactSlice = createSlice({
       )
       .addCase(updateContactFetch.rejected, state => {
         state.status = PromiseStatus.REJECTED;
-        state.error = 'Failed to update contact.';
       })
 
       .addCase(deleteContactFetch.pending, state => {
@@ -67,7 +65,7 @@ const contactSlice = createSlice({
       })
       .addCase(deleteContactFetch.rejected, state => {
         state.status = PromiseStatus.REJECTED;
-        state.error = 'Failed to delete contact.';
+        state.error = null;
       });
   },
 });
