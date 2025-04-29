@@ -17,8 +17,8 @@ export const Room: FC = () => {
   const [activeFilter, setActiveFilter] = useState<string>('All');
   const [selectRow, setSelectRow] = useState<number[]>([]);
 
-  const addRoom = () => navigate('/Rooms/NewRoom');
-  const editRoom = (id: number) => navigate(`/Rooms/EditRoom/${id}`);
+  const addRoom = () => navigate('/Room/NewRoom');
+  const editRoom = (id: number) => navigate(`/Room/EditRoom/${id}`);
 
   const columns: Column<RoomInterface>[] = [
     { header: 'Room ID', accessor: 'room_id' },

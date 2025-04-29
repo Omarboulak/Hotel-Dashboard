@@ -1,4 +1,4 @@
-import React, { useEffect, useState, ChangeEvent, FormEvent } from 'react';
+import React, { useEffect, useState, ChangeEvent, FormEvent, FC } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { FormContainer, FormTitle, Form, Label, Input, SubmitButton } from '../../components/styledFrom';
 import { useAppDispatch, useAppSelector } from '../../Redux/hooks';
@@ -6,7 +6,7 @@ import { updateRoomFetch } from '../redux/roomThunk';
 import { RoomInterface } from '../../interfaces/RoomInterface';
 import { RootState } from '../../Redux/store';
 
-export const EditRoom: React.FC = () => {
+export const EditRoom: FC = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { id } = useParams();

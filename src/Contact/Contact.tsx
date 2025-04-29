@@ -6,11 +6,11 @@ import { Filter, FilterOption } from "../components/filter/Filter";
 import { addContactFetch, deleteContactFetch } from "./redux/contactThunk";
 import type { RootState } from "../Redux/store";
 import { Info, Image, Details } from "../room/roomStyled";
-import { FullName, ID, ContactJoin, Status, Contact } from '../users/usersStyled';
+import { FullName, ID, ContactJoin, Status } from '../users/usersStyled';
 import { MenuTable, Add } from "../booking/bookingStyled";
 import { ContactInterface } from "../interfaces/ContactInterface";
 
-export const Contacts: FC = () => {
+export const Contact: FC = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 

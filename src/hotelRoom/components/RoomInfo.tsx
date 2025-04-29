@@ -1,9 +1,9 @@
-import React from "react";
+import React,{ FC } from "react";
 import { RoomInfoContainer } from "./hotelRoom";
 import { UserData } from "./UserData";
 import { RoomData } from "./RoomData";
 
-export const RoomInfo = () => {
+export const RoomInfo: FC = () => {
     return (
         <RoomInfoContainer>
            <UserData></UserData>

@@ -1,11 +1,10 @@
-import React from "react";
-import styled from 'styled-components';
+import React, { FC } from "react";
 import logOut from '../../assets/log-out.svg'
 import { Container } from "./headerStyled";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../login/context/loginContext";
 
-export const Header = () => {
+export const Header: FC = () => {
     const navigate = useNavigate();
     const {dispatch} = useAuth();
     const handleLogOut = () => {

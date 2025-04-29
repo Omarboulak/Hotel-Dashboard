@@ -1,11 +1,11 @@
-import React, { ChangeEvent, useState, FormEvent } from 'react';
+import React, { ChangeEvent, useState, FormEvent, FC } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAppDispatch } from '../../Redux/hooks';
 import { RoomInterface } from '../../interfaces/RoomInterface';
 import { addRoom } from '../redux/roomSlice';
 import { FormContainer, FormTitle, Form, Label, Input, SubmitButton, Textarea } from '../../components/styledFrom';
 
-export const NewRoom = () => {
+export const NewRoom: FC = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
@@ -33,7 +33,7 @@ export const NewRoom = () => {
       ID: Number(formData.room_id)
     };
     dispatch(addRoom(newRoomData));
-    navigate('/Users');
+    navigate('/Room');
   };
 
   return (

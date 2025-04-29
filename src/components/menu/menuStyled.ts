@@ -1,0 +1,116 @@
+import styled from 'styled-components';
+
+export const MenuContainer = styled.div`
+    width: 20%;
+    background-color: #FFFFFF;
+    box-shadow: 13px 3px 40px #00000005;
+`;
+
+export const StyledMenu = styled.ul`
+    list-style-type: none;
+    padding: 0;
+
+    li {
+        display: flex;
+        align-items: center;
+        margin: 10px 0;
+        font-size: 18px;
+        font-family: Poppins;
+        color: #799283;
+        padding: 1rem 0 1rem 2rem;
+
+        a {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        img {
+            margin-right: 10px;
+            width: 28px;
+            height: 28px;
+            /* El atributo fill no se aplica directamente en un <img>, 
+               si necesitas cambiar el color del SVG, importa el SVG como componente o usa otra técnica */
+        }
+    }
+`;
+
+export const Logo = styled.div`
+    display: flex;
+    align-items: center; 
+    gap: 10px; 
+    padding: 2rem;
+`;
+
+export const Name = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    p:first-child {
+        font-size: 20px;
+        font-weight: bold;
+        color: #000;
+    }
+
+    p:last-child {
+        font: normal normal 300 12px Poppins;
+        color: #5D5449;
+    }
+`;
+
+export const Trav = styled.p`
+    margin: 2rem 0 0.5rem;
+    font: normal normal 600 16px Poppins;
+    color: #212121;
+    padding-left: 2rem;
+`;
+
+export const Copy = styled.p`
+    font: normal normal 300 14px Poppins;
+    color: #799283;
+    padding-left: 2rem;
+`;
+
+export const Made = styled.p`
+    font: normal normal 300 14px Poppins;
+    color: #799283;
+    margin-top: 3rem;
+    padding-left: 2rem;
+`;
+
+export const User = styled.div`
+    text-align: center;
+    margin: 2rem auto 3rem;
+    padding: 0.5rem;
+    width: 70%;
+    box-shadow: 0px 20px 30px #00000014;
+    border-radius: 18px;
+
+    img {
+        height: 70px;
+        width: 70px;
+    }
+
+    button {
+        font: normal normal 600 14px/21px Poppins;
+        color: #135846;
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        background-color: #EBF1EF;
+        margin-top: 1rem;
+        border: 0;
+    }
+`;
+
+export const UserName = styled.p`
+    font: normal normal medium 16px Poppins;
+    color: #393939;
+    margin: 0.5rem 0;
+`;
+
+export const UserGmail = styled.p`
+    font: normal normal 300 12px Poppins;
+    color: #B2B2B2;
+`;
