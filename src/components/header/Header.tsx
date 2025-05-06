@@ -8,6 +8,7 @@ export const Header: FC = () => {
     const navigate = useNavigate();
     const {dispatch} = useAuth();
     const handleLogOut = () => {
+        localStorage.removeItem('jwtToken');
         dispatch({ type: 'logout' });
         navigate("/login");
     }

@@ -17,7 +17,7 @@ export const EditContact: React.FC = () => {
   );
 
   const [formData, setFormData] = useState<ContactInterface>({
-    ID: 0,
+    ID: contactId,
     Date: '',
     first_name: '',
     last_name: '',
@@ -35,14 +35,23 @@ export const EditContact: React.FC = () => {
   }, [contact]);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value, type, checked } = e.target;
+    setFormData({
+      ...formData,
+      [name]: type === 'checkbox' ? checked : value,
+    });
   };
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    dispatch(updateContactFetch({ id: formData.ID, contactData: formData }));
-    navigate('/Contact');
+    try {
+      await dispatch(updateContactFetch({ id: formData.ID, contact: formData })).unwrap();
+      navigate('/Contact');
+    } catch (err: any) {
+      console.error('Error updating contact', err);
+    }
   };
+
 
   return (
     <FormContainer>

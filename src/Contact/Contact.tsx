@@ -1,9 +1,9 @@
-import React, { useEffect, useState, FC, ChangeEvent } from "react";
+import React, { useEffect, useState, ChangeEvent, FC } from "react";
 import { useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from "../Redux/hooks";
 import Table, { Column } from "../components/Table/Table";
 import { Filter, FilterOption } from "../components/filter/Filter";
-import { addContactFetch, deleteContactFetch } from "./redux/contactThunk";
+import { allContactsFetch, deleteContactFetch } from "./redux/contactThunk";
 import type { RootState } from "../Redux/store";
 import { Info, Image, Details } from "../room/roomStyled";
 import { FullName, ID, ContactJoin, Status } from '../users/usersStyled';
@@ -14,9 +14,9 @@ export const Contact: FC = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  const contacts = useAppSelector((state: RootState) => state.contacts.value as ContactInterface[]);
+  const contacts = useAppSelector((state: RootState) => state.contacts.value);
 
-  const [filteredContacts, setFilteredContacts] = useState<ContactInterface[]>(contacts);
+  const [filteredContacts, setFilteredContacts] = useState<ContactInterface[]>([]);
   const [activeFilter, setActiveFilter] = useState<string>("All");
   const [selectRow, setSelectRow] = useState<number[]>([]);
 
@@ -33,35 +33,33 @@ export const Contact: FC = () => {
   ];
 
   const menuOptions: FilterOption[] = [
-    { value: "All", label: "All" },
-    { value: "true", label: "Archived" },
+    { value: "All",   label: "All" },
+    { value: "true",  label: "Archived" },
     { value: "false", label: "Not Archived" },
   ];
 
   useEffect(() => {
-    if (contacts.length === 0) {
-      dispatch(addContactFetch());
+    dispatch(allContactsFetch());
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (activeFilter === 'All') {
+      setFilteredContacts(contacts);
+    } else {
+      setFilteredContacts(contacts.filter(c => String(c.ARCHIVE) === activeFilter));
     }
-    setFilteredContacts(contacts);
-  }, [dispatch, contacts]);
+  }, [contacts, activeFilter]);
 
   const handleFilter = (status: string) => {
     setActiveFilter(status);
-    if (status === 'All') {
-      setFilteredContacts(contacts);
-    } else {
-      setFilteredContacts(contacts.filter(c => String(c.ARCHIVE) === status));
-    }
   };
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     if (selectRow.length === 0) {
       alert("No se ha seleccionado ninguna fila");
       return;
     }
-    selectRow.forEach(id => {
-      dispatch(deleteContactFetch(id));
-    });
+    await Promise.all(selectRow.map(id => dispatch(deleteContactFetch(id)).unwrap()));
     setSelectRow([]);
   };
 
@@ -78,11 +76,11 @@ export const Contact: FC = () => {
   };
 
   const handleCheckbox = (e: ChangeEvent<HTMLInputElement>, id: number) => {
-    if (e.target.checked) {
-      setSelectRow(prev => [...prev, id]);
-    } else {
-      setSelectRow(prev => prev.filter(selectedId => selectedId !== id));
-    }
+    setSelectRow(prev =>
+      e.target.checked
+        ? [...prev, id]
+        : prev.filter(selectedId => selectedId !== id)
+    );
   };
 
   return (
@@ -116,7 +114,7 @@ export const Contact: FC = () => {
           }
           if (col.accessor === 'ARCHIVE') {
             return (
-              <Status status={row.ARCHIVE.toString()}>
+              <Status status={String(row.ARCHIVE)}>
                 {row.ARCHIVE ? 'Archived' : 'Active'}
               </Status>
             );

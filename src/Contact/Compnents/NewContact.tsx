@@ -1,8 +1,8 @@
 import React, { ChangeEvent, useState, FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAppDispatch } from '../../Redux/hooks';
+import { createContactFetch, allContactsFetch } from '../redux/contactThunk';
 import { ContactInterface } from '../../interfaces/ContactInterface';
-import { addContact } from '../redux/contactSlice';
 import { FormContainer, FormTitle, Form, Label, Input, SubmitButton, Textarea } from '../../components/styledFrom';
 
 export const NewContact: React.FC = () => {
@@ -22,17 +22,22 @@ export const NewContact: React.FC = () => {
   });
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value, type, checked } = e.target;
+    setFormData({
+      ...formData,
+      [name]: type === 'checkbox' ? checked : value,
+    });
   };
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const newContactData: ContactInterface = {
-      ...formData,
-      ID: Number(formData.ID),
-    };
-    dispatch(addContact(newContactData));
-    navigate('/Contact');
+    try {
+      await dispatch(createContactFetch(formData)).unwrap();
+      dispatch(allContactsFetch());
+      navigate('/Contact');
+    } catch (err: any) {
+      console.error('Error creating contact', err);
+    }
   };
 
   return (

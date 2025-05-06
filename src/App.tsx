@@ -35,6 +35,7 @@ const AuthRoutes: React.FC = () => {
   const { state, dispatch } = useAuth();
 
   const handleLogOut = () => {
+    localStorage.removeItem('jwtToken');
     dispatch({ type: "logout" });
   };
 

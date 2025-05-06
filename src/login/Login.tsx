@@ -12,23 +12,55 @@ export const Login: FC<LoginProps> = ({ onLogin }) => {
   const { dispatch } = useAuth();
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleLogin = (): void => {
-    if (email === "123" && password === "123") {
-      dispatch({ type: "login", payload: email });
+  const handleLogin = async (): Promise<void> => {
+    if (!email || !password) {
+      setError("Por favor completa todos los campos");
+      return;
+    }
+
+    setLoading(true);
+    setError(null);
+
+    try {
+      const response = await fetch("http://localhost:3001/api/v1/auth", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Error de autenticación");
+      }
+
+      localStorage.setItem("jwtToken", data.token);
+      
+      dispatch({ type: "login", payload: data.email });
+      
       onLogin?.();
       navigate("/Room");
-    } else {
-      alert("El usuario no existe");
+
+    } catch (err: any) {
+      setError(err.message || "Error de conexión con el servidor");
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleEmailChange = (e: ChangeEvent<HTMLInputElement>): void => {
     setEmail(e.target.value);
+    setError(null); 
   };
 
   const handlePasswordChange = (e: ChangeEvent<HTMLInputElement>): void => {
     setPassword(e.target.value);
+    setError(null); 
   };
 
   return (
@@ -38,15 +70,17 @@ export const Login: FC<LoginProps> = ({ onLogin }) => {
         <p>Email</p>
         <GradientBackground>
           <Input
-            type="text"
+            type="email"
             placeholder="Enter your Email"
             value={email}
             onChange={handleEmailChange}
+            disabled={loading}
             data-cy="email"
             data-testid="inputEmail"
           />
         </GradientBackground>
       </Box>
+
       <Box>
         <p>Password</p>
         <GradientBackground>
@@ -55,17 +89,21 @@ export const Login: FC<LoginProps> = ({ onLogin }) => {
             placeholder="Enter your Password"
             value={password}
             onChange={handlePasswordChange}
+            disabled={loading}
             data-cy="password"
             data-testid="inputPassword"
           />
         </GradientBackground>
       </Box>
-      <LoginButton onClick={handleLogin} data-cy="sign-in" data-testid="buttonLogin">
-        Login
+
+      <LoginButton 
+        onClick={handleLogin} 
+        disabled={loading}
+        data-cy="sign-in" 
+        data-testid="buttonLogin"
+      >
+        {loading ? "Cargando..." : "Login"}
       </LoginButton>
-      <Text>
-        Don't have an account?<a href="#"> Sign up</a>
-      </Text>
     </Container>
   );
 };

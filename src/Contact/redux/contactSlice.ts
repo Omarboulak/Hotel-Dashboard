@@ -1,74 +1,45 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { addContactFetch, updateContactFetch, deleteContactFetch } from './contactThunk'
-import { PromiseStatus } from '../../interfaces/promiseStatus';
-import { ContactInterface } from '../../interfaces/ContactInterface';
+// src/features/contact/contactSlice.ts
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createContactFetch,allContactsFetch, updateContactFetch, deleteContactFetch } from "./contactThunk";
+import { ContactInterface } from "../../interfaces/ContactInterface";
 
 interface ContactState {
   value: ContactInterface[];
-  status: PromiseStatus;
-  error: string | null;
-  loading?: boolean;
+  status: 'idle' | 'loading' | 'succeeded' | 'failed';
+  error?: string;
 }
 
 const initialState: ContactState = {
   value: [],
-  status: PromiseStatus.IDLE,
-  error: null,
+  status: 'idle',
 };
 
 const contactSlice = createSlice({
   name: 'contacts',
   initialState,
-  reducers: {
-    addContact: (state, action: PayloadAction<ContactInterface>) => {
-      state.value.push(action.payload);
-    },
-  },
-  extraReducers: builder => {
+  reducers: {},
+  extraReducers: (builder) => {
     builder
-      .addCase(addContactFetch.pending, state => {
-        state.status = PromiseStatus.PENDING;
-      })
-      .addCase(addContactFetch.fulfilled, (state, action: PayloadAction<ContactInterface[]>) => {
-        state.status = PromiseStatus.FULFILLED;
+      .addCase(allContactsFetch.pending, (state) => { state.status = 'loading'; })
+      .addCase(allContactsFetch.fulfilled, (state, action: PayloadAction<ContactInterface[]>) => {
+        state.status = 'succeeded';
         state.value = action.payload;
       })
-      .addCase(addContactFetch.rejected, state => {
-        state.status = PromiseStatus.REJECTED;
+      .addCase(allContactsFetch.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.error.message;
       })
-
-      .addCase(updateContactFetch.pending, state => {
-        state.status = PromiseStatus.PENDING;
+      .addCase(createContactFetch.fulfilled, (state, action) => {
+        state.value.push(action.payload);
       })
-      .addCase(
-        updateContactFetch.fulfilled,
-        (state, action: PayloadAction<{ id: number; editRow: Partial<ContactInterface> }>) => {
-          const { id, editRow } = action.payload;
-          state.value = state.value.map(contact =>
-            contact.ID === id ? { ...contact, ...editRow } : contact
-          );
-          state.loading = false;
-        }
-      )
-      .addCase(updateContactFetch.rejected, state => {
-        state.status = PromiseStatus.REJECTED;
-      })
-
-      .addCase(deleteContactFetch.pending, state => {
-        state.status = PromiseStatus.PENDING;
-        state.error = null;
+      .addCase(updateContactFetch.fulfilled, (state, action: PayloadAction<ContactInterface>) => {
+        const idx = state.value.findIndex(c => c.ID === action.payload.ID);
+        if (idx >= 0) state.value[idx] = action.payload;
       })
       .addCase(deleteContactFetch.fulfilled, (state, action: PayloadAction<number>) => {
-        state.status = PromiseStatus.FULFILLED;
-        state.value = state.value.filter(contact => contact.ID !== action.payload);
-        state.loading = false;
-      })
-      .addCase(deleteContactFetch.rejected, state => {
-        state.status = PromiseStatus.REJECTED;
-        state.error = null;
+        state.value = state.value.filter(c => c.ID !== action.payload);
       });
-  },
+  }
 });
 
-export const { addContact } = contactSlice.actions;
 export default contactSlice.reducer;
