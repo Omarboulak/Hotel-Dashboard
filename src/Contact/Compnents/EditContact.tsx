@@ -25,7 +25,7 @@ export const EditContact: React.FC = () => {
     phone: '',
     Subject: '',
     Comment: '',
-    ARCHIVE: false,
+    ARCHIVE: '',
   });
 
   useEffect(() => {
@@ -129,9 +129,9 @@ export const EditContact: React.FC = () => {
         <Label>
           Archive:
           <Input
-            type="checkbox"
+            type="text"
             name="ARCHIVE"
-            checked={formData.ARCHIVE}
+            value={formData.ARCHIVE}
             onChange={handleChange}
           />
         </Label>

@@ -18,7 +18,7 @@ export const NewContact: React.FC = () => {
     phone: '',
     Subject: '',
     Comment: '',
-    ARCHIVE: false,
+    ARCHIVE: '',
   });
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -36,7 +36,7 @@ export const NewContact: React.FC = () => {
       dispatch(allContactsFetch());
       navigate('/Contact');
     } catch (err: any) {
-      console.error('Error creating contact', err);
+      console.error('Error creando contact', err);
     }
   };
 
@@ -47,7 +47,7 @@ export const NewContact: React.FC = () => {
         <Label>
           Date:
           <Input
-            type="date"
+            type="text"
             name="Date"
             value={formData.Date}
             onChange={handleChange}
@@ -77,7 +77,7 @@ export const NewContact: React.FC = () => {
         <Label>
           Email:
           <Input
-            type="email"
+            type="text"
             name="email"
             value={formData.email}
             onChange={handleChange}
@@ -116,9 +116,9 @@ export const NewContact: React.FC = () => {
         <Label>
           Archive:
           <Input
-            type="checkbox"
+            type="text"
             name="ARCHIVE"
-            checked={formData.ARCHIVE}
+            value={formData.ARCHIVE}
             onChange={handleChange}
           />
         </Label>

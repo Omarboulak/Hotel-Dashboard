@@ -1,4 +1,3 @@
-// src/features/contact/contactSlice.ts
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { createContactFetch,allContactsFetch, updateContactFetch, deleteContactFetch } from "./contactThunk";
 import { ContactInterface } from "../../interfaces/ContactInterface";

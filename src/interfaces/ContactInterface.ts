@@ -7,6 +7,6 @@ export interface ContactInterface {
     phone: string;
     Subject: string;
     Comment: string;
-    ARCHIVE: boolean;
+    ARCHIVE: string;
   }
   
