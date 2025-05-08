@@ -1,17 +1,66 @@
 import { createAsyncThunk } from "@reduxjs/toolkit"
 import { BookingInterface } from '../../interfaces/BookingInterface'
 
-export const addBookingFetch = createAsyncThunk<BookingInterface[], void>('booking/add', async () =>{
-    const response = await fetch('/Booking.json');
-    return await response.json();
+export const allBookingFetch = createAsyncThunk<BookingInterface[]>('booking', async() =>{
+  const token = localStorage.getItem('jwtToken');
+  const response = await fetch('http//localhost:3001/api/vi/booling',{
+    headers: {
+      'Content-Type': 'application/json',
+      ...(token ? { Authorization: `Bearer ${token}`} : {})
+    }
+  });
+
+  if (response.status === 4001) {
+    throw new Error('token invalido')
+  }
+  return await response.json();
 })
 
-export const updateBookingFetch = createAsyncThunk<{ id: number; editRow: Partial<BookingInterface> }, { id: number; bookingData: Partial<BookingInterface> } >(
-  'booking/update',
-  async ({ id, bookingData }) => {
-    return { id, editRow: bookingData };
+export const createBookingFetch = createAsyncThunk<BookingInterface, BookingInterface>('booking/create', async (booking) =>{
+  const token = localStorage.getItem('jwtToken');
+  const {id, ...body} = booking
+  const response = await fetch('http//localhost:3001/api/vi/booling', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'aplication/json',
+      ...(token ? { Authorization: `Barer ${token}` } : {})
+    },
+    body: JSON.stringify(body),
+  });
+  if (response.status === 401) {
+    throw new Error('token invalido')
+  }
+  return await response.json();
+})
+
+export const updateBookingFetch = createAsyncThunk<BookingInterface, { id: string; booking: Partial<BookingInterface>} >('booking/update',
+  async ({ id, booking }) => {
+    const token = localStorage.getItem('jwtToken');
+    const response = await fetch(`http//localhost:3001/api/vi/booling/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        ...(token ? { Authorization: `Bearer ${token}`} : {})
+      },
+      body: JSON.stringify(booking)
+    });
+    if (!response.ok) {
+      throw new Error('Error actualizando contacto');
+    }
+    return await response.json();
   }
 );
-export const deleteBookingFetch = createAsyncThunk<number, number>('booking/delete', async (id) => {
-    return id
+export const deleteBookingFetch = createAsyncThunk<string, string>('booking/delete', async (id) => {
+  const token = localStorage.getItem('jwtToken');
+  const response = await fetch(`http//localhost:3001/api/vi/booling/${id}`, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',  
+      ...(token ? { Authorization: `Bearer ${token}`} : {})
+    },
+  })
+  if (response.status !== 204) {
+    throw new Error('Error borrando booking');
+  }
+  return id;
 })

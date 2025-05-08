@@ -6,7 +6,7 @@ import contactsReducer from '../Contact/redux/contactSlice';
 
 export const store = configureStore({
   reducer: {
-    newBooking: newBookingReducer,
+    booking: newBookingReducer,
     users: newUserReducer,
     rooms: roomsReducer,
     contacts: contactsReducer,      

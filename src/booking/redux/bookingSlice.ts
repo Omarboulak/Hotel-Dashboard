@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
-import { addBookingFetch, updateBookingFetch, deleteBookingFetch } from "./bookinThunk";
+import { allBookingFetch, createBookingFetch, updateBookingFetch, deleteBookingFetch } from "./bookinThunk";
 import { PromiseStatus } from "../../interfaces/promiseStatus";
 import { BookingInterface } from '../../interfaces/BookingInterface'
 
@@ -23,7 +23,7 @@ export const newBookingSlice = createSlice({
     name: "newBooking",
     initialState,
 
-    reducers:{
+    reducers: {
         addBooking: (state: NewBookingState, action: PayloadAction<BookingInterface>) => {
             state.value.push(action.payload);
         }
@@ -31,30 +31,37 @@ export const newBookingSlice = createSlice({
 
     extraReducers: builder => {
         builder
-            .addCase(addBookingFetch.pending,(state: NewBookingState) => {
+
+            .addCase(allBookingFetch.pending, (state) => {
+                state.status = PromiseStatus.PENDING;
+            })
+            .addCase(allBookingFetch.fulfilled, (state, action: PayloadAction<BookingInterface[]>) => {
+                state.status = PromiseStatus.FULFILLED;
+                state.value = action.payload;
+            })
+            .addCase(allBookingFetch.rejected, (state, action) => {
+                state.status = PromiseStatus.REJECTED;
+            })
+
+            .addCase(createBookingFetch.pending, (state: NewBookingState) => {
                 state.status = PromiseStatus.PENDING
-                state.error = null;
+                
             })
-            .addCase(addBookingFetch.fulfilled, (state: NewBookingState, action: PayloadAction<BookingInterface[]>) => {
+            .addCase(createBookingFetch.fulfilled, (state, action) => {
                 state.status = PromiseStatus.FULFILLED
-                state.value = action.payload
-                state.loading = false;
+                state.value.push(action.payload);
             })
-            .addCase(addBookingFetch.rejected, state => {
-                state.status = PromiseStatus.REJECTED
-                state.error = null;
+            .addCase(createBookingFetch.rejected, (state, action) => {
+                state.status = PromiseStatus.REJECTED;
             })
 
             .addCase(updateBookingFetch.pending, state => {
                 state.status = PromiseStatus.PENDING
                 state.error = null;
             })
-            .addCase(updateBookingFetch.fulfilled, (state: NewBookingState, action: PayloadAction<{id: number, editRow: Partial<BookingInterface>}>) => {
-                const { id, editRow } = action.payload;
-                state.value = state.value.map((row) =>
-                    row.ID === id ? { ...row, ...editRow } : row
-                );
-                state.loading = false;
+            .addCase(updateBookingFetch.fulfilled, (state, action) => {
+                const idx = state.value.findIndex(c => c.id === action.payload.id);
+                if (idx >= 0) state.value[idx] = action.payload;
             })
             .addCase(updateBookingFetch.rejected, state => {
                 state.status = PromiseStatus.REJECTED
@@ -64,10 +71,9 @@ export const newBookingSlice = createSlice({
                 state.status = PromiseStatus.PENDING
                 state.error = null;
             })
-            .addCase(deleteBookingFetch.fulfilled, (state: NewBookingState, action: PayloadAction<number>) => {
+            .addCase(deleteBookingFetch.fulfilled, (state, action) => {
                 state.status = PromiseStatus.FULFILLED
-                state.value = state.value.filter(cell => cell.ID !== action.payload)
-                state.loading = false;
+                state.value = state.value.filter(c => c.id !== action.payload);
             })
             .addCase(deleteBookingFetch.rejected, state => {
                 state.status = PromiseStatus.REJECTED
@@ -76,5 +82,4 @@ export const newBookingSlice = createSlice({
     },
 })
 
-export const {addBooking} = newBookingSlice.actions;
 export default newBookingSlice.reducer;

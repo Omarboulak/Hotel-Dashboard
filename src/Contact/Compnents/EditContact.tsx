@@ -5,6 +5,7 @@ import { useAppDispatch, useAppSelector } from '../../Redux/hooks';
 import { updateContactFetch, allContactsFetch } from '../redux/contactThunk';
 import { ContactInterface } from '../../interfaces/ContactInterface';
 import { RootState } from '../../Redux/store';
+import { PromiseStatus } from '../../interfaces/promiseStatus';
 
 export const EditContact: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -41,10 +42,10 @@ export const EditContact: React.FC = () => {
     }
   }, [contact]);
 
-  if (status === 'loading') {
+  if (status === PromiseStatus.PENDING) {
     return <p>Cargando...</p>;
   }
-  if (status === 'succeeded' && !contact) {
+  if (status === PromiseStatus.FULFILLED && !contact) {
     return <p>Contacto con ID {contactId} no encontrado</p>;
   }
 

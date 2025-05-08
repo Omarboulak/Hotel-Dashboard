@@ -12,9 +12,6 @@ export const allContactsFetch = createAsyncThunk<ContactInterface[]>('contacts/f
   if (response.status === 401) {
     throw new Error('token inválido');
   }
-  if (!response.ok) {
-    throw new Error('Error cargando contactos');
-  }
   return await response.json();
 });
 
@@ -62,8 +59,10 @@ export const deleteContactFetch = createAsyncThunk<string, string>('contacts/del
         ...(token ? { Authorization: `Bearer ${token}` } : {})
       }
     });
-    if (response.status === 204) return id;
-    throw new Error('Error borrando contacto');
+    if (response.status !== 204) {
+      throw new Error('Error borrando booking');
+    }
+    return id;
   }
 );
 

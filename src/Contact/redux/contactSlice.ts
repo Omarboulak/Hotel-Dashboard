@@ -1,16 +1,17 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { createContactFetch,allContactsFetch, updateContactFetch, deleteContactFetch } from "./contactThunk";
+import { createContactFetch, allContactsFetch, updateContactFetch, deleteContactFetch } from "./contactThunk";
 import { ContactInterface } from "../../interfaces/ContactInterface";
+import { PromiseStatus } from "../../interfaces/promiseStatus";
 
 interface ContactState {
   value: ContactInterface[];
-  status: 'idle' | 'loading' | 'succeeded' | 'failed';
+  status: PromiseStatus;
   error?: string;
 }
 
 const initialState: ContactState = {
   value: [],
-  status: 'idle',
+  status: PromiseStatus.IDLE,
 };
 
 const contactSlice = createSlice({
@@ -19,13 +20,15 @@ const contactSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(allContactsFetch.pending, (state) => { state.status = 'loading'; })
+      .addCase(allContactsFetch.pending, (state) => {
+        state.status = PromiseStatus.PENDING;
+      })
       .addCase(allContactsFetch.fulfilled, (state, action: PayloadAction<ContactInterface[]>) => {
-        state.status = 'succeeded';
+        state.status = PromiseStatus.FULFILLED;
         state.value = action.payload;
       })
       .addCase(allContactsFetch.rejected, (state, action) => {
-        state.status = 'failed';
+        state.status = PromiseStatus.REJECTED;
         state.error = action.error.message;
       })
       .addCase(createContactFetch.fulfilled, (state, action) => {
