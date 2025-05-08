@@ -59,7 +59,7 @@ const AuthRoutes: React.FC = () => {
 
               <Route path="/Contact" element={<Contact />} />
               <Route path="/Contact/NewContact" element={<NewContact />} />
-              <Route path="/Contact/EditContact/:contactId" element={<EditContact />} />
+              <Route path="/Contact/EditContact/:id" element={<EditContact />} />
 
               <Route path="/Users" element={<Users />} />
               <Route path="/Users/NewUsers" element={<NewUsers />} />

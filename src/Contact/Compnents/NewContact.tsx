@@ -10,7 +10,6 @@ export const NewContact: React.FC = () => {
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState<ContactInterface>({
-    ID: 0,
     Date: '',
     first_name: '',
     last_name: '',
@@ -23,21 +22,18 @@ export const NewContact: React.FC = () => {
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
-    setFormData({
-      ...formData,
-      [name]: type === 'checkbox' ? checked : value,
-    });
+    setFormData(prev => ({
+      ...prev,
+      [name]: type === 'checkbox' ? (checked ? 'true' : 'false') : value,
+    }));
   };
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    try {
-      await dispatch(createContactFetch(formData)).unwrap();
-      dispatch(allContactsFetch());
-      navigate('/Contact');
-    } catch (err: any) {
-      console.error('Error creando contact', err);
-    }
+    await dispatch(createContactFetch(formData)).unwrap();
+    await dispatch(allContactsFetch()).unwrap();
+    navigate('/Contact');
+
   };
 
   return (

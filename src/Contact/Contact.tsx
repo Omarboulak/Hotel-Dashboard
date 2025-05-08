@@ -6,7 +6,7 @@ import { Filter, FilterOption } from "../components/filter/Filter";
 import { allContactsFetch, deleteContactFetch } from "./redux/contactThunk";
 import type { RootState } from "../Redux/store";
 import { Info, Image, Details } from "../room/roomStyled";
-import { FullName, ID, ContactJoin, Status } from '../users/usersStyled';
+import { FullName, ContactJoin, Status } from '../users/usersStyled';
 import { MenuTable, Add } from "../booking/bookingStyled";
 import { ContactInterface } from "../interfaces/ContactInterface";
 
@@ -18,10 +18,10 @@ export const Contact: FC = () => {
 
   const [filteredContacts, setFilteredContacts] = useState<ContactInterface[]>([]);
   const [activeFilter, setActiveFilter] = useState<string>("All");
-  const [selectRow, setSelectRow] = useState<number[]>([]);
+  const [selectRow, setSelectRow] = useState<string[]>([]);
 
   const addContact = () => navigate('/Contact/NewContact');
-  const editContact = (id: number) => navigate(`/Contact/EditContact/${id}`);
+  const editContact = (id: string) => navigate(`/Contact/EditContact/${id}`);
 
   const columns: Column<ContactInterface>[] = [
     { header: 'Select', accessor: 'select' },
@@ -59,8 +59,11 @@ export const Contact: FC = () => {
       alert("No se ha seleccionado ninguna fila");
       return;
     }
-    await Promise.all(selectRow.map(id => dispatch(deleteContactFetch(id)).unwrap()));
+    await Promise.all(
+      selectRow.map(id => dispatch(deleteContactFetch(id)).unwrap())
+    );
     setSelectRow([]);
+    dispatch(allContactsFetch());
   };
 
   const handleUpdate = () => {
@@ -75,7 +78,7 @@ export const Contact: FC = () => {
     editContact(selectRow[0]);
   };
 
-  const handleCheckbox = (e: ChangeEvent<HTMLInputElement>, id: number) => {
+  const handleCheckbox = (e: ChangeEvent<HTMLInputElement>, id: string) => {
     setSelectRow(prev =>
       e.target.checked
         ? [...prev, id]
@@ -106,7 +109,6 @@ export const Contact: FC = () => {
                 <Image src={row.email} alt="Contact" />
                 <Details>
                   <FullName>{row.first_name} {row.last_name}</FullName>
-                  <ID>{row.ID}</ID>
                   <ContactJoin>{row.Date}</ContactJoin>
                 </Details>
               </Info>
@@ -115,7 +117,7 @@ export const Contact: FC = () => {
           if (col.accessor === 'ARCHIVE') {
             return (
               <Status status={String(row.ARCHIVE)}>
-                {row.ARCHIVE ? 'Archived' : 'Active'}
+                {row.ARCHIVE === 'true' ? 'Archived' : 'Active'}
               </Status>
             );
           }
@@ -123,8 +125,8 @@ export const Contact: FC = () => {
             return (
               <input
                 type="checkbox"
-                checked={selectRow.includes(row.ID)}
-                onChange={e => handleCheckbox(e, row.ID)}
+                checked={selectRow.includes(row.id!)}
+                onChange={e => handleCheckbox(e, row.id!)}
               />
             );
           }

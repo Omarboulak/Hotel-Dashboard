@@ -31,12 +31,12 @@ const contactSlice = createSlice({
       .addCase(createContactFetch.fulfilled, (state, action) => {
         state.value.push(action.payload);
       })
-      .addCase(updateContactFetch.fulfilled, (state, action: PayloadAction<ContactInterface>) => {
-        const idx = state.value.findIndex(c => c.ID === action.payload.ID);
+      .addCase(updateContactFetch.fulfilled, (state, action) => {
+        const idx = state.value.findIndex(c => c.id === action.payload.id);
         if (idx >= 0) state.value[idx] = action.payload;
       })
-      .addCase(deleteContactFetch.fulfilled, (state, action: PayloadAction<number>) => {
-        state.value = state.value.filter(c => c.ID !== action.payload);
+      .addCase(deleteContactFetch.fulfilled, (state, action) => {
+        state.value = state.value.filter(c => c.id !== action.payload);
       });
   }
 });

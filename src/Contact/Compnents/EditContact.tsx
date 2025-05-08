@@ -2,7 +2,7 @@ import React, { useEffect, useState, ChangeEvent, FormEvent } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { FormContainer, FormTitle, Form, Label, Input, SubmitButton } from '../../components/styledFrom';
 import { useAppDispatch, useAppSelector } from '../../Redux/hooks';
-import { updateContactFetch } from '../redux/contactThunk';
+import { updateContactFetch, allContactsFetch } from '../redux/contactThunk';
 import { ContactInterface } from '../../interfaces/ContactInterface';
 import { RootState } from '../../Redux/store';
 
@@ -10,14 +10,21 @@ export const EditContact: React.FC = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
-  const contactId = Number(id);
+  const contactId = id!;
 
-  const contact = useAppSelector((state: RootState) =>
-    state.contacts.value.find(c => c.ID === contactId)
-  );
+  const status = useAppSelector((s: RootState) => s.contacts.status);
+  const contacts = useAppSelector((s: RootState) => s.contacts.value);
+
+  useEffect(() => {
+    if (status === 'idle') {
+      dispatch(allContactsFetch());
+    }
+  }, [dispatch, status]);
+
+  const contact = contacts.find(c => c.id === contactId);
 
   const [formData, setFormData] = useState<ContactInterface>({
-    ID: contactId,
+    id: contactId,
     Date: '',
     first_name: '',
     last_name: '',
@@ -34,24 +41,30 @@ export const EditContact: React.FC = () => {
     }
   }, [contact]);
 
+  if (status === 'loading') {
+    return <p>Cargando...</p>;
+  }
+  if (status === 'succeeded' && !contact) {
+    return <p>Contacto con ID {contactId} no encontrado</p>;
+  }
+
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
-    setFormData({
-      ...formData,
-      [name]: type === 'checkbox' ? checked : value,
-    });
+    setFormData(prev => ({
+      ...prev,
+      [name]: type === 'checkbox' ? checked.toString() : value,
+    }));
   };
 
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     try {
-      await dispatch(updateContactFetch({ id: formData.ID, contact: formData })).unwrap();
+      await dispatch(updateContactFetch({ id: contactId, contact: formData })).unwrap();
       navigate('/Contact');
     } catch (err: any) {
       console.error('Error updating contact', err);
     }
   };
-
 
   return (
     <FormContainer>
