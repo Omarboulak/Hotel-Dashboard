@@ -31,15 +31,36 @@ const contactSlice = createSlice({
         state.status = PromiseStatus.REJECTED;
         state.error = action.error.message;
       })
+      .addCase(createContactFetch.pending, (state) => {
+        state.status = PromiseStatus.PENDING;
+      })
       .addCase(createContactFetch.fulfilled, (state, action) => {
         state.value.push(action.payload);
+      })
+      .addCase(createContactFetch.rejected, (state, action) => {
+        state.status = PromiseStatus.REJECTED;
+        state.error = action.error.message;
+      })
+      .addCase(updateContactFetch.pending, (state) => {
+        state.status = PromiseStatus.PENDING;
       })
       .addCase(updateContactFetch.fulfilled, (state, action) => {
         const idx = state.value.findIndex(c => c.id === action.payload.id);
         if (idx >= 0) state.value[idx] = action.payload;
       })
+      .addCase(updateContactFetch.rejected, (state, action) => {
+        state.status = PromiseStatus.REJECTED;
+        state.error = action.error.message;
+      })
+      .addCase(deleteContactFetch.pending, (state) => {
+        state.status = PromiseStatus.PENDING;
+      })
       .addCase(deleteContactFetch.fulfilled, (state, action) => {
         state.value = state.value.filter(c => c.id !== action.payload);
+      })
+      .addCase(deleteContactFetch.rejected, (state, action) => {
+        state.status = PromiseStatus.REJECTED;
+        state.error = action.error.message;
       });
   }
 });

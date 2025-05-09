@@ -1,7 +1,7 @@
 import React, { useEffect, useState, ChangeEvent, FormEvent, FC } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { FormContainer, FormTitle, Form, Label, Input, SubmitButton, Textarea } from '../../components/styledFrom';
-import { updateBookingFetch } from '../redux/bookinThunk';
+import { createBookingFetch, allBookingFetch } from '../redux/bookinThunk';
 import { useAppDispatch, useAppSelector } from '../../Redux/hooks';
 import { BookingInterface } from '../../interfaces/BookingInterface';
 import { RootState } from '../../Redux/store';
@@ -9,15 +9,9 @@ import { RootState } from '../../Redux/store';
 export const NewBooking: FC = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const { bookingId } = useParams<{ bookingId: string }>();
-  const idNumber = Number(bookingId);
 
-  const booking = useAppSelector((state: RootState) =>
-    state.newBooking.value.find(b => b.ID === idNumber)
-  );
 
   const [formData, setFormData] = useState<BookingInterface>({
-    ID: 0,
     first_Name: '',
     last_Name: '',
     orderDate: '',
@@ -29,22 +23,15 @@ export const NewBooking: FC = () => {
     status: ''
   });
 
-  useEffect(() => {
-    if (booking) {
-      setFormData(booking);
-    }
-  }, [booking]);
-
-  const handleChange = (
-    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    dispatch(updateBookingFetch({ id: idNumber, bookingData: formData }));
+    await dispatch(createBookingFetch(formData)).unwrap();
+    await dispatch(allBookingFetch()).unwrap();
     navigate('/Bookings');
   };
 
@@ -75,7 +62,7 @@ export const NewBooking: FC = () => {
           <Input
             type="number"
             name="ID"
-            value={formData.ID}
+            value={formData.id}
             onChange={handleChange}
           />
         </Label>

@@ -3,7 +3,7 @@ import { BookingInterface } from '../../interfaces/BookingInterface'
 
 export const allBookingFetch = createAsyncThunk<BookingInterface[]>('booking', async() =>{
   const token = localStorage.getItem('jwtToken');
-  const response = await fetch('http//localhost:3001/api/vi/booling',{
+  const response = await fetch('http://localhost:3001/api/v1/booking',{
     headers: {
       'Content-Type': 'application/json',
       ...(token ? { Authorization: `Bearer ${token}`} : {})
@@ -19,7 +19,7 @@ export const allBookingFetch = createAsyncThunk<BookingInterface[]>('booking', a
 export const createBookingFetch = createAsyncThunk<BookingInterface, BookingInterface>('booking/create', async (booking) =>{
   const token = localStorage.getItem('jwtToken');
   const {id, ...body} = booking
-  const response = await fetch('http//localhost:3001/api/vi/booling', {
+  const response = await fetch('http://localhost:3001/api/v1/booking', {
     method: 'POST',
     headers: {
       'Content-Type': 'aplication/json',
@@ -36,7 +36,7 @@ export const createBookingFetch = createAsyncThunk<BookingInterface, BookingInte
 export const updateBookingFetch = createAsyncThunk<BookingInterface, { id: string; booking: Partial<BookingInterface>} >('booking/update',
   async ({ id, booking }) => {
     const token = localStorage.getItem('jwtToken');
-    const response = await fetch(`http//localhost:3001/api/vi/booling/${id}`, {
+    const response = await fetch(`http://localhost:3001/api/v1/booking/${id}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -52,7 +52,7 @@ export const updateBookingFetch = createAsyncThunk<BookingInterface, { id: strin
 );
 export const deleteBookingFetch = createAsyncThunk<string, string>('booking/delete', async (id) => {
   const token = localStorage.getItem('jwtToken');
-  const response = await fetch(`http//localhost:3001/api/vi/booling/${id}`, {
+  const response = await fetch(`http://localhost:3001/api/v1/booking/${id}`, {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',  
