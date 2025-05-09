@@ -45,8 +45,8 @@ const contactSlice = createSlice({
         state.status = PromiseStatus.PENDING;
       })
       .addCase(updateContactFetch.fulfilled, (state, action) => {
-        const idx = state.value.findIndex(c => c.id === action.payload.id);
-        if (idx >= 0) state.value[idx] = action.payload;
+        const idCont = state.value.findIndex(c => c.id === action.payload.id);
+        if (idCont >= 0) state.value[idCont] = action.payload;
       })
       .addCase(updateContactFetch.rejected, (state, action) => {
         state.status = PromiseStatus.REJECTED;
