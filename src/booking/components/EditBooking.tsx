@@ -1,23 +1,31 @@
 import React, { useEffect, useState, ChangeEvent, FormEvent, FC } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { FormContainer, FormTitle, Form, Label, Input, SubmitButton, Textarea } from '../../components/styledFrom';
-import { updateBookingFetch } from '../redux/bookinThunk';
+import { updateBookingFetch, allBookingFetch } from '../redux/bookinThunk';
 import { useAppDispatch, useAppSelector } from '../../Redux/hooks';
 import { BookingInterface } from '../../interfaces/BookingInterface';
 import { RootState } from '../../Redux/store';
+import { PromiseStatus } from '../../interfaces/promiseStatus';
 
 export const EditBooking: FC = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const { bookingId } = useParams<{ bookingId: string }>();
-  const idNumber = Number(bookingId);
+  const id = bookingId!;
 
-  const booking = useAppSelector((state: RootState) =>
-    state.newBooking.value.find(b => b.ID === idNumber)
+  const status = useAppSelector((s: RootState) => s.booking.status);
+  useEffect(() => {
+    if (status === 'idle') {
+      dispatch(allBookingFetch());
+    }
+  }, [dispatch, status]);
+
+  const booking = useAppSelector((s: RootState) =>
+    s.booking.value.find(b => b.id === id)
   );
 
   const [formData, setFormData] = useState<BookingInterface>({
-    ID: 0,
+    id,
     first_Name: '',
     last_Name: '',
     orderDate: '',
@@ -35,14 +43,22 @@ export const EditBooking: FC = () => {
     }
   }, [booking]);
 
+  if (status === PromiseStatus.PENDING) {
+    return <p>Cargando booking…</p>;
+  }
+
+  if (status === PromiseStatus.FULFILLED && !booking) {
+  return <p>Booking con ID {bookingId} no encontrado</p>;
+  }
+
   const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData(prev => ({ ...prev, [name]: name === 'roomNumber' ? Number(value) : value }));
   };
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    dispatch(updateBookingFetch({ id: idNumber, bookingData: formData }));
+    await dispatch(updateBookingFetch({ id, booking: formData })).unwrap();
     navigate('/Bookings');
   };
 
@@ -56,8 +72,7 @@ export const EditBooking: FC = () => {
             type="text"
             name="first_Name"
             value={formData.first_Name}
-            onChange={handleChange}
-          />
+            onChange={handleChange} />
         </Label>
         <Label>
           Last Name:
@@ -65,17 +80,7 @@ export const EditBooking: FC = () => {
             type="text"
             name="last_Name"
             value={formData.last_Name}
-            onChange={handleChange}
-          />
-        </Label>
-        <Label>
-          ID:
-          <Input
-            type="number"
-            name="ID"
-            value={formData.ID}
-            onChange={handleChange}
-          />
+            onChange={handleChange} />
         </Label>
         <Label>
           Order Date:
@@ -83,8 +88,7 @@ export const EditBooking: FC = () => {
             type="date"
             name="orderDate"
             value={formData.orderDate}
-            onChange={handleChange}
-          />
+            onChange={handleChange} />
         </Label>
         <Label>
           Check In:
@@ -92,8 +96,7 @@ export const EditBooking: FC = () => {
             type="date"
             name="checkIn"
             value={formData.checkIn}
-            onChange={handleChange}
-          />
+            onChange={handleChange} />
         </Label>
         <Label>
           Check Out:
@@ -101,16 +104,14 @@ export const EditBooking: FC = () => {
             type="date"
             name="checkOut"
             value={formData.checkOut}
-            onChange={handleChange}
-          />
+            onChange={handleChange} />
         </Label>
         <Label>
           Special Request:
           <Textarea
             name="specialRequest"
             value={formData.specialRequest}
-            onChange={handleChange}
-          />
+            onChange={handleChange} />
         </Label>
         <Label>
           Room Type:
@@ -118,8 +119,7 @@ export const EditBooking: FC = () => {
             type="text"
             name="roomType"
             value={formData.roomType}
-            onChange={handleChange}
-          />
+            onChange={handleChange} />
         </Label>
         <Label>
           Room Number:
@@ -127,8 +127,7 @@ export const EditBooking: FC = () => {
             type="number"
             name="roomNumber"
             value={formData.roomNumber}
-            onChange={handleChange}
-          />
+            onChange={handleChange} />
         </Label>
         <Label>
           Status:
@@ -136,11 +135,12 @@ export const EditBooking: FC = () => {
             type="text"
             name="status"
             value={formData.status}
-            onChange={handleChange}
-          />
+            onChange={handleChange} />
         </Label>
         <SubmitButton type="submit">Save Booking</SubmitButton>
       </Form>
     </FormContainer>
   );
 };
+
+export default EditBooking;

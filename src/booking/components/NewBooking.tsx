@@ -4,12 +4,10 @@ import { FormContainer, FormTitle, Form, Label, Input, SubmitButton, Textarea } 
 import { createBookingFetch, allBookingFetch } from '../redux/bookinThunk';
 import { useAppDispatch, useAppSelector } from '../../Redux/hooks';
 import { BookingInterface } from '../../interfaces/BookingInterface';
-import { RootState } from '../../Redux/store';
 
 export const NewBooking: FC = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-
 
   const [formData, setFormData] = useState<BookingInterface>({
     first_Name: '',
@@ -54,15 +52,6 @@ export const NewBooking: FC = () => {
             type="text"
             name="last_Name"
             value={formData.last_Name}
-            onChange={handleChange}
-          />
-        </Label>
-        <Label>
-          ID:
-          <Input
-            type="number"
-            name="ID"
-            value={formData.id}
             onChange={handleChange}
           />
         </Label>
