@@ -1,17 +1,17 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { addUsersFetch, updateUsersFetch, deleteUsersFetch } from './usersThunk';
+import { createUserFetch, updateUserFetch, deleteUserFetch, allUsersFetch } from './usersThunk';
 import { PromiseStatus } from '../../interfaces/promiseStatus';
 import { UsersInterface } from '../../interfaces/UsersInterface'
 
 
-export interface NewBookingState {
+export interface NewUsersState {
   value: UsersInterface[];
   status: PromiseStatus;
   error: string | null;
   loading?: boolean;
 }
 
-const initialState: NewBookingState = {
+const initialState: NewUsersState = {
   value: [],
   status: PromiseStatus.IDLE,
   error: null,
@@ -25,46 +25,58 @@ const usersSlice = createSlice({
       state.value.push(action.payload);
     },
   },
-  extraReducers: builder => {
+  extraReducers: (builder) => {
     builder
-      .addCase(addUsersFetch.pending, state => {
+      .addCase(allUsersFetch.pending, (state) => {
         state.status = PromiseStatus.PENDING;
       })
-      .addCase(addUsersFetch.fulfilled, (state, action: PayloadAction<UsersInterface[]>) => {
-        state.status = PromiseStatus.IDLE;
-        state.value = action.payload;
-      })
-      .addCase(addUsersFetch.rejected, state => {
+      .addCase(
+        allUsersFetch.fulfilled,
+        (state, action: PayloadAction<UsersInterface[]>) => {
+          state.status = PromiseStatus.FULFILLED;
+          state.value = action.payload;
+        }
+      )
+      .addCase(allUsersFetch.rejected, (state) => {
         state.status = PromiseStatus.REJECTED;
       })
 
-      .addCase(updateUsersFetch.pending, state => {
+      .addCase(createUserFetch.pending, (state: NewUsersState) => {
         state.status = PromiseStatus.PENDING;
       })
-      .addCase(updateUsersFetch.fulfilled, (state, action: PayloadAction<{ id: number, editRow: Partial<UsersInterface> }>) => {
-        const { id, editRow } = action.payload;
-        state.value = state.value.map((row) =>
-          row.ID === id ? { ...row, ...editRow } : row
-        );
-        state.loading = false;
+      .addCase(createUserFetch.fulfilled, (state, action) => {
+        state.status = PromiseStatus.FULFILLED;
+        state.value.push(action.payload);
       })
-      .addCase(updateUsersFetch.rejected, state => {
+      .addCase(createUserFetch.rejected, (state) => {
         state.status = PromiseStatus.REJECTED;
       })
 
-      .addCase(deleteUsersFetch.pending, state => {
-        state.status = PromiseStatus.PENDING
+      .addCase(updateUserFetch.pending, (state) => {
+        state.status = PromiseStatus.PENDING;
         state.error = null;
       })
-      .addCase(deleteUsersFetch.fulfilled, (state, action: PayloadAction<number>) => {
-        state.status = PromiseStatus.FULFILLED
-        state.value = state.value.filter(cell => cell.ID !== action.payload)
-        state.loading = false;
+      .addCase(updateUserFetch.fulfilled, (state, action) => {
+        const idx = state.value.findIndex((u) => u.id === action.payload.id);
+        if (idx >= 0) state.value[idx] = action.payload;
       })
-      .addCase(deleteUsersFetch.rejected, state => {
-        state.status = PromiseStatus.REJECTED
+      .addCase(updateUserFetch.rejected, (state) => {
+        state.status = PromiseStatus.REJECTED;
         state.error = null;
       })
+
+      .addCase(deleteUserFetch.pending, (state) => {
+        state.status = PromiseStatus.PENDING;
+        state.error = null;
+      })
+      .addCase(deleteUserFetch.fulfilled, (state, action) => {
+        state.status = PromiseStatus.FULFILLED;
+        state.value = state.value.filter((u) => u.id !== action.payload);
+      })
+      .addCase(deleteUserFetch.rejected, (state) => {
+        state.status = PromiseStatus.REJECTED;
+        state.error = null;
+      });
   },
 });
 

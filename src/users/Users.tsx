@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from "../Redux/hooks";
 import Table, { Column } from "../components/Table/Table";
 import { Filter, FilterOption } from "../components/filter/Filter";
-import { addUsersFetch, deleteUsersFetch } from "./redux/usersThunk";
+import { createUserFetch, allUsersFetch, deleteUserFetch } from "./redux/usersThunk";
 import type { RootState } from "../Redux/store";
 // import phone from '../assets/phone.svg';
 import { Info, Image, Details } from "../room/roomStyled";
@@ -19,10 +19,10 @@ export const Users: FC = () => {
 
   const [filteredUsers, setFilteredUsers] = useState<UsersInterface[]>(users);
   const [activeFilter, setActiveFilter] = useState<string>("All");
-  const [selectRow, setSelectRow] = useState<number[]>([]);
+  const [selectRow, setSelectRow] = useState<string[]>([]);
 
   const addUser = () => navigate('/Users/NewUsers');
-  const editUser = (id: number) => navigate(`/Users/EditUser/${id}`);
+  const editUser = (id: string) => navigate(`/Users/EditUser/${id}`);
 
   const columns: Column<UsersInterface>[] = [
     { header: 'Select', accessor: 'select' },
@@ -30,7 +30,7 @@ export const Users: FC = () => {
     { header: 'Email', accessor: 'Email' },
     { header: 'Job Desk', accessor: 'JobDescription' },
     { header: 'Contact', accessor: 'Contact' },
-    { header: 'Status', accessor: 'Status' },
+    { header: 'Status', accessor: 'status' },
   ];
 
   const menuOptions: FilterOption[] = [
@@ -38,53 +38,53 @@ export const Users: FC = () => {
     { value: "ACTIVE", label: "ACTIVE" },
     { value: "INACTIVE", label: "INACTIVE" },
   ];
+ 
+   useEffect(() => {
+     dispatch(allUsersFetch());
+   }, [dispatch]);
+ 
+   useEffect(() => {
+     if (activeFilter === 'All') {
+       setFilteredUsers(users);
+     } else {
+       setFilteredUsers(users.filter(b => b.status === activeFilter));
+     }
+   }, [users, activeFilter]);
+ 
+   const handleFilter = (status: string) => {
+     setActiveFilter(status);
+   };
+ 
+   const handleDelete = async () => {
+     if (selectRow.length === 0) {
+       alert("No se ha seleccionado ninguna fila");
+       return;
+     }
+     await Promise.all(selectRow.map(id => dispatch(deleteUserFetch(id)).unwrap()));
+     setSelectRow([]);
+     dispatch(allUsersFetch());
+   };
+ 
+   const handleUpdate = () => {
+     if (selectRow.length !== 1) {
+       alert(selectRow.length === 0 
+         ? "No se ha seleccionado ninguna fila" 
+         : "Solo puede editar un booking a la vez");
+       return;
+     }
+     editUser(selectRow[0]);
+   };
+ 
+   const handleCheckbox = (e: ChangeEvent<HTMLInputElement>, id: string) => {
+     setSelectRow(prev =>
+       e.target.checked
+         ? [...prev, id]
+         : prev.filter(selectedId => selectedId !== id)
+     );
+   };
+ 
 
-  useEffect(() => {
-    if (users.length === 0) {
-      dispatch(addUsersFetch());
-    }
-    setFilteredUsers(users);
-  }, [dispatch, users]);
 
-  const handleFilter = (status: string) => {
-    setActiveFilter(status);
-    if (status === 'All') {
-      setFilteredUsers(users);
-    } else {
-      setFilteredUsers(users.filter(user => user.Status === status));
-    }
-  };
-
-  const handleDelete = () => {
-    if (selectRow.length === 0) {
-      alert("No se ha seleccionado ninguna fila");
-      return;
-    }
-    selectRow.forEach(id => {
-      dispatch(deleteUsersFetch(id));
-    });
-    setSelectRow([]);
-  };
-
-  const handleUpdate = () => {
-    if (selectRow.length === 0) {
-      alert("No se ha seleccionado ninguna fila");
-      return;
-    }
-    if (selectRow.length > 1) {
-      alert("No se puede seleccionar más de una fila");
-      return;
-    }
-    editUser(selectRow[0]);
-  };
-
-  const handleCheckbox = (e: ChangeEvent<HTMLInputElement>, id: number) => {
-    if (e.target.checked) {
-      setSelectRow(prev => [...prev, id]);
-    } else {
-      setSelectRow(prev => prev.filter(selectedId => selectedId !== id));
-    }
-  };
 
   return (
     <div>
@@ -109,16 +109,16 @@ export const Users: FC = () => {
                 <Image src={row.Photo} alt="User" />
                 <Details>
                   <FullName>{row.FullName}</FullName>
-                  <ID>{row.ID}</ID>
+                  <ID>{row.id}</ID>
                   <UserJoin>{row.StartDate}</UserJoin>
                 </Details>
               </Info>
             );
           }
-          if (col.accessor === 'Status') {
+          if (col.accessor === 'status') {
             return (
-              <Status status={row.Status}>
-                {row.Status}
+              <Status status={row.status}>
+                {row.status}
               </Status>
             );
           }
@@ -134,8 +134,8 @@ export const Users: FC = () => {
             return (
               <input
                 type="checkbox"
-                checked={selectRow.includes(row.ID)}
-                onChange={e => handleCheckbox(e, row.ID)}
+                checked={selectRow.includes(row.id!)}
+                onChange={e => handleCheckbox(e, row.id!)}
               />
             );
           }
