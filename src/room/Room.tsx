@@ -1,11 +1,11 @@
-import React, { useEffect, useState, ChangeEvent, FC } from "react";
-import { useNavigate } from 'react-router-dom';
-import { useAppDispatch, useAppSelector } from "../Redux/hooks";
+import React, { useEffect, useState, FC, ChangeEvent } from "react";
+import { useNavigate } from "react-router-dom";
 import Table, { Column } from "../components/Table/Table";
-import { Filter, FilterOption } from "../components/filter/Filter";
-import { addRoomFetch, updateRoomFetch, deleteRoomFetch } from './redux/roomThunk';
-import type { RootState } from "../Redux/store";
 import { MenuTable, Add } from "../booking/bookingStyled";
+import { Filter, FilterOption } from "../components/filter/Filter";
+import { allRoomFetch, deleteRoomFetch } from "./redux/roomThunk";
+import type { RootState } from "../Redux/store";
+import { useAppDispatch, useAppSelector } from "../Redux/hooks";
 import { RoomInterface } from "../interfaces/RoomInterface";
 
 export const Room: FC = () => {
@@ -13,38 +13,40 @@ export const Room: FC = () => {
   const navigate = useNavigate();
 
   const rooms = useAppSelector((state: RootState) => state.rooms.value as RoomInterface[]);
-  const [filteredRooms, setFilteredRooms] = useState<RoomInterface[]>(rooms);
-  const [activeFilter, setActiveFilter] = useState<string>('All');
+
+  const [filteredRooms, setFilteredRooms] = useState<RoomInterface[]>([]);
+  const [activeFilter, setActiveFilter] = useState<string>("All");
   const [selectRow, setSelectRow] = useState<number[]>([]);
 
-  const addRoom = () => navigate('/Room/NewRoom');
+  const addRoom = () => navigate("/Room/NewRoom");
   const editRoom = (id: number) => navigate(`/Room/EditRoom/${id}`);
 
   const columns: Column<RoomInterface>[] = [
-    { header: 'Room ID', accessor: 'room_id' },
-    { header: 'Type', accessor: 'room_type' },
-    { header: 'Price', accessor: 'price' },
-    { header: 'Discount', accessor: 'discount' },
-    { header: 'Offer', accessor: 'offer' },
-    { header: 'Amenities', accessor: 'amenities' },
+    { header: "Select", accessor: "select" },
+    { header: "Room ID", accessor: "room_number" },
+    { header: "Type", accessor: "room_type" },
+    { header: "Price", accessor: "price" },
+    { header: "Discount", accessor: "discount" },
+    { header: "Offer", accessor: "offer" },
+    { header: "Amenities", accessor: "amenities" },
   ];
 
   const menuOptions: FilterOption[] = [
-    { value: 'All', label: 'All' },
-    { value: 'true', label: 'Offer' },
-    { value: 'false', label: 'No Offer' },
+    { value: "All", label: "All" },
+    { value: "true", label: "Offer" },
+    { value: "false", label: "No Offer" },
   ];
 
   useEffect(() => {
     if (rooms.length === 0) {
-      dispatch(addRoomFetch());
+      dispatch(allRoomFetch());
     }
     setFilteredRooms(rooms);
   }, [dispatch, rooms]);
 
   const handleFilter = (value: string) => {
     setActiveFilter(value);
-    if (value === 'All') {
+    if (value === "All") {
       setFilteredRooms(rooms);
     } else {
       setFilteredRooms(rooms.filter(room => String(room.offer) === value));
@@ -53,7 +55,7 @@ export const Room: FC = () => {
 
   const handleDelete = () => {
     if (selectRow.length === 0) {
-      alert('No rooms selected');
+      alert("No rooms selected");
       return;
     }
     selectRow.forEach(id => dispatch(deleteRoomFetch(id)));
@@ -62,11 +64,11 @@ export const Room: FC = () => {
 
   const handleUpdate = () => {
     if (selectRow.length === 0) {
-      alert('No rooms selected');
+      alert("No rooms selected");
       return;
     }
     if (selectRow.length > 1) {
-      alert('Select only one room to edit');
+      alert("Select only one room to edit");
       return;
     }
     editRoom(selectRow[0]);
@@ -83,11 +85,7 @@ export const Room: FC = () => {
   return (
     <div>
       <MenuTable>
-        <Filter 
-          options={menuOptions} 
-          selected={activeFilter} 
-          onSelect={handleFilter} />
-          
+        <Filter options={menuOptions} selected={activeFilter} onSelect={handleFilter} />
         <Add onClick={addRoom}>+ Add Room</Add>
         <Add onClick={handleUpdate}>Edit</Add>
         <Add onClick={handleDelete}>Delete</Add>
@@ -97,12 +95,12 @@ export const Room: FC = () => {
         columns={columns}
         data={filteredRooms}
         renderCell={(col, row) => {
-          if (col.accessor === 'select') {
+          if (col.accessor === "select") {
             return (
               <input
                 type="checkbox"
-                checked={selectRow.includes(row.room_id)}
-                onChange={e => handleCheckbox(e, row.room_id)}
+                checked={selectRow.includes(row.room_number)}
+                onChange={e => handleCheckbox(e, row.room_number)}
               />
             );
           }

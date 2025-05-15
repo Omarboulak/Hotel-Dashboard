@@ -1,16 +1,16 @@
 import React, { ChangeEvent, useState, FormEvent, FC } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { FormContainer, FormTitle, Form, Label, Input, SubmitButton, Textarea } from '../../components/styledFrom';
+import { createRoomFetch, allRoomFetch } from '../redux/roomThunk';
 import { useAppDispatch } from '../../Redux/hooks';
 import { RoomInterface } from '../../interfaces/RoomInterface';
-import { addRoom } from '../redux/roomSlice';
-import { FormContainer, FormTitle, Form, Label, Input, SubmitButton, Textarea } from '../../components/styledFrom';
 
 export const NewRoom: FC = () => {
-  const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
 
   const [formData, setFormData] = useState<RoomInterface>({
-    room_id: 0,
+    room_number: 0,
     room_type: '',
     description: '',
     photos: '',
@@ -18,21 +18,23 @@ export const NewRoom: FC = () => {
     price: 0,
     discount: 0,
     cancellation_policy: '',
-    amenities: '',
+    amenities: ''
   });
 
-
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
+const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const { name, value, type } = e.target;
   
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  if (type === 'checkbox') {
+    const target = e.target as HTMLInputElement;
+    setFormData(prev => ({...prev, [name]: target.checked}));
+  } else {
+    setFormData(prev => ({...prev, [name]: value}));
+  }
+};
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const newRoomData = {
-      ...formData,
-      ID: Number(formData.room_id)
-    };
-    dispatch(addRoom(newRoomData));
+    await dispatch(createRoomFetch(formData)).unwrap();
+    await dispatch(allRoomFetch()).unwrap();
     navigate('/Room');
   };
 
@@ -40,6 +42,15 @@ export const NewRoom: FC = () => {
     <FormContainer>
       <FormTitle>New Room</FormTitle>
       <Form onSubmit={handleSubmit}>
+        <Label>
+          Room Number:
+          <Input
+            type="number"
+            name="room_number"
+            value={formData.room_number}
+            onChange={handleChange}
+          />
+        </Label>
         <Label>
           Room Type:
           <Input
@@ -49,16 +60,23 @@ export const NewRoom: FC = () => {
             onChange={handleChange}
           />
         </Label>
-
         <Label>
           Description:
-          <Input
+          <Textarea
             name="description"
             value={formData.description}
             onChange={handleChange}
           />
         </Label>
-
+        <Label>
+          Photos:
+          <Input
+            type="text"
+            name="photos"
+            value={formData.photos}
+            onChange={handleChange}
+          />
+        </Label>
         <Label>
           Price:
           <Input
@@ -68,7 +86,6 @@ export const NewRoom: FC = () => {
             onChange={handleChange}
           />
         </Label>
-
         <Label>
           Discount:
           <Input
@@ -78,7 +95,15 @@ export const NewRoom: FC = () => {
             onChange={handleChange}
           />
         </Label>
-
+        <Label>
+          Cancellation Policy:
+          <Input
+            type="text"
+            name="cancellation_policy"
+            value={formData.cancellation_policy}
+            onChange={handleChange}
+          />
+        </Label>
         <Label>
           Amenities:
           <Input
@@ -88,7 +113,6 @@ export const NewRoom: FC = () => {
             onChange={handleChange}
           />
         </Label>
-
         <Label>
           Offer:
           <Input
@@ -98,10 +122,8 @@ export const NewRoom: FC = () => {
             onChange={handleChange}
           />
         </Label>
-
         <SubmitButton type="submit">Create Room</SubmitButton>
       </Form>
     </FormContainer>
   );
 };
-

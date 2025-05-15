@@ -1,8 +1,8 @@
 export interface RoomInterface {
-  room_id: number;
+  room_number: number;
   room_type: string;
   description: string;
-  photos: string | null;
+  photos: string;
   offer: boolean;
   price: number;
   discount: number;

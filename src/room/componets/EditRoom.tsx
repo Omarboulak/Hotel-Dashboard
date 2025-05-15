@@ -1,23 +1,23 @@
 import React, { useEffect, useState, ChangeEvent, FormEvent, FC } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { FormContainer, FormTitle, Form, Label, Input, SubmitButton } from '../../components/styledFrom';
+import { FormContainer, FormTitle, Form, Label, Input, SubmitButton, Textarea } from '../../components/styledFrom';
 import { useAppDispatch, useAppSelector } from '../../Redux/hooks';
-import { updateRoomFetch } from '../redux/roomThunk';
+import { updateRoomFetch, allRoomFetch } from '../redux/roomThunk';
 import { RoomInterface } from '../../interfaces/RoomInterface';
 import { RootState } from '../../Redux/store';
 
 export const EditRoom: FC = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const { id } = useParams();
+  const { id } = useParams<{ id: string }>();
   const roomId = Number(id);
 
   const room = useAppSelector((state: RootState) =>
-    state.rooms.value.find(r => r.room_id === roomId)
+    state.rooms.value.find(r => r.room_number === roomId)
   );
 
   const [formData, setFormData] = useState<RoomInterface>({
-    room_id: 0,
+    room_number: 0,
     room_type: '',
     description: '',
     photos: '',
@@ -34,16 +34,32 @@ export const EditRoom: FC = () => {
     }
   }, [room]);
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    if (formData) {
-      setFormData({ ...formData, [e.target.name]: e.target.value });
+  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value, type } = e.target;
+
+    if (type === 'checkbox') {
+      const input = e.target as HTMLInputElement;
+      setFormData(prev => ({
+        ...prev,
+        [name]: input.checked
+      }));
+    } else if (name === 'room_number' || name === 'price' || name === 'discount') {
+      setFormData(prev => ({
+        ...prev,
+        [name]: Number(value)
+      }));
+    } else {
+      setFormData(prev => ({
+        ...prev,
+        [name]: value
+      }));
     }
   };
 
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    dispatch(updateRoomFetch({ id: formData.room_id, roomData: formData }));
+    await dispatch(updateRoomFetch({ room_number: formData.room_number, room: formData })).unwrap();
     navigate('/Rooms');
   };
 
@@ -51,6 +67,15 @@ export const EditRoom: FC = () => {
     <FormContainer>
       <FormTitle>Edit Room</FormTitle>
       <Form onSubmit={handleSubmit}>
+        <Label>
+          Room Number:
+          <Input
+            type="number"
+            name="room_number"
+            value={formData.room_number}
+            onChange={handleChange}
+          />
+        </Label>
         <Label>
           Room Type:
           <Input
@@ -62,19 +87,18 @@ export const EditRoom: FC = () => {
         </Label>
         <Label>
           Description:
-          <Input
-            type="textarea"
+          <Textarea
             name="description"
             value={formData.description}
             onChange={handleChange}
           />
         </Label>
         <Label>
-          Photo URL:
+          Photos:
           <Input
             type="text"
             name="photos"
-            value={formData.photos ?? ''}
+            value={formData.photos}
             onChange={handleChange}
           />
         </Label>
@@ -99,7 +123,7 @@ export const EditRoom: FC = () => {
         <Label>
           Cancellation Policy:
           <Input
-            type="textarea"
+            type="text"
             name="cancellation_policy"
             value={formData.cancellation_policy}
             onChange={handleChange}
@@ -128,3 +152,5 @@ export const EditRoom: FC = () => {
     </FormContainer>
   );
 };
+
+export default EditRoom;
