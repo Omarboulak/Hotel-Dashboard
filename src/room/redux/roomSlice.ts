@@ -52,7 +52,8 @@ export const newRoomSlice = createSlice({
         state.error = null;
       })
       .addCase(updateRoomFetch.fulfilled, (state, action) => {
-        const idx = state.value.findIndex(c => c.room_number === action.payload.room_number);
+        state.status = PromiseStatus.FULFILLED;         
+        const idx = state.value.findIndex( c => c.room_number === action.payload.room_number);
         if (idx >= 0) state.value[idx] = action.payload;
       })
       .addCase(updateRoomFetch.rejected, state => {

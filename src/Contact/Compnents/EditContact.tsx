@@ -1,4 +1,4 @@
-import React, { useEffect, useState, ChangeEvent, FormEvent } from 'react';
+import React, { useEffect, useState, ChangeEvent, FormEvent, FC} from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { FormContainer, FormTitle, Form, Label, Input, SubmitButton } from '../../components/styledFrom';
 import { useAppDispatch, useAppSelector } from '../../Redux/hooks';
@@ -7,7 +7,7 @@ import { ContactInterface } from '../../interfaces/ContactInterface';
 import { RootState } from '../../Redux/store';
 import { PromiseStatus } from '../../interfaces/promiseStatus';
 
-export const EditContact: React.FC = () => {
+export const EditContact: FC = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
