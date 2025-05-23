@@ -22,10 +22,7 @@ export const NewContact: React.FC = () => {
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: type === 'checkbox' ? (checked ? 'true' : 'false') : value,
-    }));
+    setFormData(prev => ({ ...prev, [name]: type === 'checkbox' ? (checked ? 'true' : 'false') : value }));
   };
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {

@@ -33,7 +33,7 @@ export const createBookingFetch = createAsyncThunk<BookingInterface, BookingInte
   return await response.json();
 })
 
-export const updateBookingFetch = createAsyncThunk<BookingInterface, { id: string; booking: Partial<BookingInterface> }>('booking/update',
+export const updateBookingFetch = createAsyncThunk<BookingInterface, { id: number; booking: Partial<BookingInterface> }>('booking/update',
   async ({ id, booking }) => {
     const token = localStorage.getItem('jwtToken');
     const response = await fetch(`http://localhost:3001/api/v1/booking/${id}`, {
@@ -50,7 +50,7 @@ export const updateBookingFetch = createAsyncThunk<BookingInterface, { id: strin
     return await response.json();
   }
 );
-export const deleteBookingFetch = createAsyncThunk<string, string>('booking/delete', async (id) => {
+export const deleteBookingFetch = createAsyncThunk<number, number>('booking/delete', async (id) => {
   const token = localStorage.getItem('jwtToken');
   const response = await fetch(`http://localhost:3001/api/v1/booking/${id}`, {
     method: 'DELETE',

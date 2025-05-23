@@ -1,5 +1,6 @@
 export interface ContactInterface {
-  id?: string;
+  id?: number;
+  booking_id?: number;
   Date: string;
   first_name: string;
   last_name: string;

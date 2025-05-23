@@ -11,7 +11,7 @@ export const EditContact: FC = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
-  const contactId = id!;
+  const contactId = Number(id);
 
   const status = useAppSelector((s: RootState) => s.contacts.status);
   const contacts = useAppSelector((s: RootState) => s.contacts.value);
@@ -26,6 +26,7 @@ export const EditContact: FC = () => {
 
   const [formData, setFormData] = useState<ContactInterface>({
     id: contactId,
+    booking_id: 0, 
     Date: '',
     first_name: '',
     last_name: '',

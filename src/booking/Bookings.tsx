@@ -17,17 +17,17 @@ export const Bookings: FC = () => {
 
   const [filteredBooking, setFilteredBooking] = useState<BookingInterface[]>([]);
   const [activeFilter, setActiveFilter] = useState<string>("All");
-  const [selectRow, setSelectRow] = useState<string[]>([]);
-  const [open, setOpen] = useState<string | null>(null);
+  const [selectRow, setSelectRow] = useState<number[]>([]);
+  const [open, setOpen] = useState<number | null>(null);
   const selectedBooking = bookings.find(item => item.id === open);
 
   const addBooking = () => navigate('/Bookings/NewBooking');
-  const editBooking = (id: string) => navigate(`/Bookings/EditBooking/${id}`);
+  const editBooking = (id: number) => navigate(`/Bookings/EditBooking/${id}`);
 
   const menuOptions: FilterOption[] = [
     { value: "All", label: "All" },
-    { value: "CheckIn", label: "CheckIn" },
-    { value: "CheckOut", label: "CheckOut" },
+    { value: "CheckIn", label: "checkIn" },
+    { value: "CheckOut", label: "checkOut" },
     { value: "In Progress", label: "In Progress" },
   ];
 
@@ -78,15 +78,11 @@ export const Bookings: FC = () => {
     editBooking(selectRow[0]);
   };
 
-  const handleCheckbox = (e: ChangeEvent<HTMLInputElement>, id: string) => {
-    setSelectRow(prev =>
-      e.target.checked
-        ? [...prev, id]
-        : prev.filter(selectedId => selectedId !== id)
-    );
+  const handleCheckbox = (e: ChangeEvent<HTMLInputElement>, id: number) => {
+    setSelectRow(prev => e.target.checked ? [...prev, id] : prev.filter(selectedId => selectedId !== id));
   };
 
-  const openPopup = (id: string) => setOpen(id);
+  const openPopup = (id: number) => setOpen(id);
   const closePopup = () => setOpen(null);
 
   return (

@@ -32,7 +32,7 @@ export const createContactFetch = createAsyncThunk<ContactInterface, ContactInte
   }
 );
 
-export const updateContactFetch = createAsyncThunk<ContactInterface, { id: string; contact: Partial<ContactInterface> }>('contacts/update',
+export const updateContactFetch = createAsyncThunk<ContactInterface, { id: number; contact: Partial<ContactInterface> }>('contacts/update',
   async ({ id, contact }) => {
     const token = localStorage.getItem('jwtToken');
     const response = await fetch(`http://localhost:3001/api/v1/contact/${id}`, {
@@ -50,7 +50,7 @@ export const updateContactFetch = createAsyncThunk<ContactInterface, { id: strin
   }
 );
 
-export const deleteContactFetch = createAsyncThunk<string, string>('contacts/delete', async (id) => {
+export const deleteContactFetch = createAsyncThunk<number, number>('contacts/delete', async (id) => {
     const token = localStorage.getItem('jwtToken');
     const response = await fetch(`http://localhost:3001/api/v1/contact/${id}`, {
       method: 'DELETE',

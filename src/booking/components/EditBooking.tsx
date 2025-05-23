@@ -11,7 +11,7 @@ export const EditBooking: FC = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const { bookingId } = useParams<{ bookingId: string }>();
-  const id = bookingId!;
+  const id = Number(bookingId);
 
   const status = useAppSelector((s: RootState) => s.booking.status);
   useEffect(() => {
